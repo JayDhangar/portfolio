@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>JAY DHANGAR | Portfolio</title>
+<style>
+  :root { --acc: #33ff66; --acc-dark: #1c8c38; --bg: #070a08; --dim: rgba(51, 255, 102, 0.55); }
+  * { box-sizing: border-box; margin: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg); color: var(--acc);
+    font-family: 'Cascadia Code', 'Fira Code', Consolas, monospace;
+    font-size: 15px; line-height: 1.65; padding-bottom: 120px;
+  }
+  ::selection { background: var(--acc); color: var(--bg); }
+  .crt::after {
+    content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 50;
+    background: repeating-linear-gradient(0deg, rgba(0,0,0,0.18) 0 1px, transparent 1px 3px);
+    animation: flicker 6s infinite;
+  }
+  @keyframes flicker { 0%,100% { opacity: .8 } 48% { opacity: .8 } 50% { opacity: .55 } 52% { opacity: .8 } }
+  .glow { text-shadow: 0 0 8px var(--dim), 0 0 24px rgba(51, 255, 102, 0.25); }
+  .wrap { max-width: 880px; margin: 0 auto; padding: 40px 22px; }
+  .bar {
+    position: sticky; top: 0; z-index: 40; background: rgba(7,10,8,0.92); backdrop-filter: blur(4px);
+    border-bottom: 1px solid rgba(51, 255, 102, 0.25); padding: 10px 22px;
+    display: flex; gap: 10px; align-items: center; font-size: 13px;
+  }
+  .dot { width: 11px; height: 11px; border-radius: 50%; background: #ff5f57; }
+  .dot:nth-child(2) { background: #febc2e; } .dot:nth-child(3) { background: #28c840; }
+  .bar span { color: var(--dim); margin-left: 8px; }
+  .prompt { color: var(--acc-light, var(--acc)); }
+  .prompt b { color: #9ef;  font-weight: 600; }
+  .cursor { display: inline-block; width: 9px; height: 18px; background: var(--acc); vertical-align: text-bottom;
+            animation: blink 1s steps(1) infinite; }
+  @keyframes blink { 50% { opacity: 0 } }
+  section { margin-top: 46px; opacity: 0; transform: translateY(8px); transition: opacity .5s, transform .5s; }
+  section.on { opacity: 1; transform: none; }
+  .cmd { color: var(--dim); margin-bottom: 12px; }
+  .cmd .typed { color: var(--acc); }
+  .out { color: #cfe8cf; padding-left: 2px; }
+  .out h1 { font-size: clamp(30px, 6vw, 54px); color: var(--acc); letter-spacing: 1px; }
+  .out .role { color: #9ef; }
+  .kv { color: var(--dim); } .kv b { color: #cfe8cf; font-weight: 500; }
+  a { color: #9ef; text-decoration: none; border-bottom: 1px dashed rgba(153,238,255,.4); }
+  a:hover { background: rgba(153,238,255,.12); }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 10px; margin-top: 8px; }
+  .chip { border: 1px solid rgba(51, 255, 102, .35); padding: 3px 10px; border-radius: 4px;
+          display: inline-block; margin: 3px 4px 3px 0; color: #cfe8cf; font-size: 13px;
+          transition: all .15s; cursor: default; }
+  .chip:hover { background: var(--acc); color: var(--bg); box-shadow: 0 0 14px var(--dim); }
+  .proj { border: 1px solid rgba(51, 255, 102, .3); border-radius: 6px; padding: 14px 16px; margin: 10px 0;
+          cursor: pointer; transition: border-color .2s, box-shadow .2s; }
+  .proj:hover { border-color: var(--acc); box-shadow: 0 0 18px rgba(51, 255, 102, .15); }
+  .proj .pname { color: var(--acc); font-weight: 600; }
+  .proj .pname::before { content: "▸ "; transition: transform .2s; display: inline-block; }
+  .proj.open .pname::before { transform: rotate(90deg); }
+  .proj .body { max-height: 0; overflow: hidden; transition: max-height .45s ease; color: #cfe8cf; }
+  .proj.open .body { max-height: 400px; padding-top: 10px; }
+  .xp { border-left: 2px solid rgba(51, 255, 102, .4); margin: 14px 0 14px 4px; padding: 2px 0 2px 16px; }
+  .xp .t { color: var(--acc); font-weight: 600; } .xp .c { color: #9ef; font-size: 13px; }
+  .xp ul { padding-left: 18px; color: #cfe8cf; } .xp li { margin: 3px 0; }
+  .term {
+    position: fixed; bottom: 0; left: 0; right: 0; z-index: 45;
+    background: rgba(5,7,5,0.97); border-top: 1px solid rgba(51, 255, 102, .4); padding: 12px 22px;
+  }
+  .term input { background: transparent; border: none; outline: none; color: var(--acc);
+                font: inherit; width: 70%; }
+  #tout { max-height: 180px; overflow-y: auto; font-size: 13px; color: #cfe8cf; }
+  #tout div { margin: 2px 0; }
+  .hint { color: rgba(51, 255, 102, .5); font-size: 12px; }
+  /* system bugs: skills disguised as crawlers. click one to squash it */
+  .bug { position: absolute; left: 0; top: 0; z-index: 30; width: 26px; height: 19px; cursor: crosshair;
+         will-change: transform; filter: drop-shadow(0 0 5px var(--dim)); }
+  .bug svg { width: 100%; height: 100%; display: block; }
+  .pxx { position: fixed; z-index: 31; width: 4px; height: 4px; background: var(--acc);
+         pointer-events: none; transition: transform .7s ease-out, opacity .7s; }
+  .bugname { position: fixed; z-index: 32; color: var(--acc); font-weight: 700; white-space: nowrap;
+             text-shadow: 0 0 12px var(--dim); pointer-events: none;
+             animation: bugname 1.5s ease-out forwards; }
+  @keyframes bugname { 0% { opacity: 0; transform: translate(-50%, 8px) scale(.6); }
+                       18% { opacity: 1; transform: translate(-50%, -6px) scale(1.05); }
+                       100% { opacity: 0; transform: translate(-50%, -40px) scale(1.1); } }
+  .bugtoast { position: fixed; right: 16px; bottom: 92px; z-index: 46; font-size: 13px; color: #cfe8cf;
+              background: rgba(5,9,6,.95); border: 1px solid rgba(51, 255, 102, .45);
+              padding: 8px 14px; opacity: 0; transition: opacity .3s; pointer-events: none; }
+  .bugtoast.on { opacity: 1; }
+  @media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; transition: none !important; }
+    section { opacity: 1; transform: none; }
+  }
+</style>
+</head>
+<body class="crt">
+<div class="bar"><div class="dot"></div><div class="dot"></div><div class="dot"></div>
+  <span>jay-dhangar@portfolio: ~/jay</span></div>
+
+<div class="wrap">
+  <section id="hero" class="on">
+    <div class="cmd glow"><span class="prompt"><b>jay-dhangar@portfolio</b>:~$</span> <span class="typed" data-type="whoami"></span><span class="cursor" id="c0"></span></div>
+    <div class="out" data-reveal>
+      <h1 class="glow">JAY DHANGAR</h1>
+      <p class="role">AI ENGINEER / GENERATIVE AI ENGINEER - AGENTIC AI &amp; AUTOMATION</p>
+      <p class="kv">📍 <b>Bhopal, India</b> · ✉ <a href="mailto:dhangarjay447@gmail.com">dhangarjay447@gmail.com</a></p>
+      <p class="kv">
+        <a href="https://github.com/JayDhangar" target="_blank">github</a> · 
+        
+        
+      </p>
+    </div>
+  </section>
+
+  
+  <section>
+    <div class="cmd"><span class="prompt"><b>jay-dhangar@portfolio</b>:~$</span> <span class="typed" data-type="cat about.md"></span></div>
+    <div class="out" data-reveal><p>AI Engineer specializing in Agentic AI and Automation, with hands-on experience building autonomous and multi-agent systems using LangChain, LangGraph, CrewAI, and Agno. Proven expertise in developing production-level AI applications, workflow automation, API integrations, and multimodal AI including OCR, image generation, video creation, and TTS.</p></div>
+  </section>
+  
+
+  
+  <section>
+    <div class="cmd"><span class="prompt"><b>jay-dhangar@portfolio</b>:~$</span> <span class="typed" data-type="./skills --list"></span></div>
+    <div class="out" data-reveal>
+      
+      <p class="kv" style="margin-top:8px"><b>Languages</b>:</p>
+      <div><span class="chip">Python</span><span class="chip">SQL</span></div>
+      
+      <p class="kv" style="margin-top:8px"><b>AI / LLM</b>:</p>
+      <div><span class="chip">OpenAI API</span><span class="chip">GPT-4o</span><span class="chip">Groq</span><span class="chip">LangChain</span><span class="chip">LangGraph</span><span class="chip">CrewAI</span><span class="chip">Agno</span><span class="chip">RAG</span><span class="chip">FAISS</span><span class="chip">Embeddings</span><span class="chip">Prompt Engineering</span></div>
+      
+      <p class="kv" style="margin-top:8px"><b>AI Systems</b>:</p>
+      <div><span class="chip">Multi-Agent Systems</span><span class="chip">LLM Orchestration</span><span class="chip">Web Search</span><span class="chip">OCR</span><span class="chip">TTS</span><span class="chip">Image Generation</span></div>
+      
+      <p class="kv" style="margin-top:8px"><b>Backend</b>:</p>
+      <div><span class="chip">FastAPI</span><span class="chip">REST APIs</span><span class="chip">Webhooks</span><span class="chip">OAuth2</span><span class="chip">Workflow Automation</span></div>
+      
+      <p class="kv" style="margin-top:8px"><b>Databases</b>:</p>
+      <div><span class="chip">PostgreSQL</span><span class="chip">MySQL</span><span class="chip">MongoDB</span></div>
+      
+      <p class="kv" style="margin-top:8px"><b>Cloud / DevOps</b>:</p>
+      <div><span class="chip">AWS EC2</span><span class="chip">ECR</span><span class="chip">S3</span><span class="chip">SSM</span><span class="chip">Docker</span><span class="chip">GitHub Actions</span><span class="chip">CI/CD</span></div>
+      
+      <p class="kv" style="margin-top:8px"><b>Tools</b>:</p>
+      <div><span class="chip">Git</span><span class="chip">Postman</span><span class="chip">VS Code</span><span class="chip">PyCharm</span><span class="chip">Jupyter</span></div>
+      
+    </div>
+  </section>
+  
+
+  <section>
+    <div class="cmd"><span class="prompt"><b>jay-dhangar@portfolio</b>:~$</span> <span class="typed" data-type="ls projects/ --details"></span></div>
+    <div class="out" data-reveal>
+      
+      <div class="proj" onclick="this.classList.toggle('open')">
+        <div class="pname">AI-POWERED MEDIA &amp; CONTENT GENERATION SUITE</div>
+        <div class="body">
+          <p></p>
+          <ul><li>Designed OCR-based automation pipelines to extract and process text from images using LLMs.</li><li>Built text-to-image generation workflows using Stable Diffusion.</li><li>Automated multi-platform social media content generation from image and text inputs.</li></ul>
+          
+          
+        </div>
+      </div>
+      
+      <div class="proj" onclick="this.classList.toggle('open')">
+        <div class="pname">MULTI-AGENT AI RECRUITMENT ASSISTANT</div>
+        <div class="body">
+          <p></p>
+          <ul><li>Built a multi-agent system that auto-ingests resumes from Gmail and converts them to structured data.</li><li>Matched candidate skills against job requirements using LLM-based scoring and analysis.</li><li>Triggered automated recruitment emails via LangGraph orchestration pipelines.</li></ul>
+          
+          
+        </div>
+      </div>
+      
+      <div class="proj" onclick="this.classList.toggle('open')">
+        <div class="pname">ChristianAI — AI &amp; Backend Engineer</div>
+        <div class="body">
+          <p>Production AI application</p>
+          <ul><li>Architected and developed a dual-path AI assistant supporting both Christian-specific and general ChatGPT-style conversations using OpenAI APIs with intent classification and safety guardrails.</li><li>Integrated OpenAI Responses API with live web search to provide current, web-grounded answers with citations.</li><li>Implemented LLM-based query classification fallback to enhance intent detection for misspellings and ambiguous queries.</li><li>Built AI-powered image-generation and vision workflows using GPT-4o/GPT-4o-mini, including poster generation and intelligent person placement.</li><li>Developed a faithful face-compositing pipeline that seamlessly integrates user-uploaded photos into AI-generated poster designs.</li><li>Built AI Bible narration infrastructure using TTS and Whisper, generating synchronized audio that enhanced engagement.</li><li>Designed and implemented the complete Bible Player backend, achieving ease of use for over 100,000 users.</li><li>Re-engineered billing from chapter-based charging to real listening-time usage metering, aligning credit consumption with actual user activity.</li><li>Implemented a 30-day quiz-streak reward system that enhances user retention by incentivizing engagement.</li><li>Built automated narration caching jobs, improving first-play performance and reducing wait times.</li><li>Designed a 90-day no-repeat devotional system with timezone-aware daily verse selection, optimizing user experience.</li><li>Recalibrated the application&#39;s credit/pricing infrastructure based on actual OpenAI usage costs.</li><li>Implemented semantic AI-generated conversation titles to enhance user interaction and personalization.</li><li>Developed a scripture-translation quality system for consistent multilingual poster generation.</li></ul>
+          <p class="kv">stack: <b>Python, FastAPI, PostgreSQL, OpenAI API, GPT-4o, GPT-4o-mini, Responses API, Web Search, Whisper, TTS, image generation, S3, Docker, pytest, CI/CD, REST APIs</b></p>
+          
+        </div>
+      </div>
+      
+      <div class="proj" onclick="this.classList.toggle('open')">
+        <div class="pname">Mendle — AI &amp; Backend Engineer</div>
+        <div class="body">
+          <p>Production AI mental-wellness / mentorship platform</p>
+          <ul><li>Built the core LLM orchestration layer using Groq and LangChain, including retry/backoff handling and differentiated per-minute vs. daily token-limit errors.</li><li>Implemented embedding-based response-quality validation using cosine-similarity relevance scoring, repetition checks, and response-length validation.</li><li>Integrated real-time web-search grounding using Serper/Google Search API with prompt-injection defenses.</li><li>Designed a privacy-preserving multi-party AI mediation engine controlling participant anonymity in sensitive conversations.</li><li>Developed recency-aware context management, improving conversation coherence and relevance.</li><li>Built an Emotional Memory Object pipeline that generates insights from conversations, improving user support capabilities.</li><li>Implemented AI oversight to track model latency and user interaction metrics, ensuring continuous improvement.</li></ul>
+          <p class="kv">stack: <b>Python, FastAPI, Groq, LangChain, OpenAI GPT-4o, Whisper, DALL·E 3, Google Veo, Serper/Google Search API, PaddleOCR, embeddings, LLM-as-a-judge, PostgreSQL, Docker, AWS ECR, AWS EC2, AWS SSM, GitHub Actions, Locust</b></p>
+          
+        </div>
+      </div>
+      
+      
+    </div>
+  </section>
+
+  
+  <section>
+    <div class="cmd"><span class="prompt"><b>jay-dhangar@portfolio</b>:~$</span> <span class="typed" data-type="git log --experience"></span></div>
+    <div class="out" data-reveal>
+      
+      <div class="xp">
+        <div class="t">AI TRAINEE</div>
+        <div class="c">SoluLab · February 2026 → Present</div>
+        <ul><li>Developing scalable AI-powered features and end-to-end automation solutions for client projects.</li><li>Designed and implemented agentic workflows using LangChain, LangGraph, and CrewAI to automate complex business workflows.</li><li>Building multi-agent AI systems with RAG pipelines, LangGraph, CrewAI, and Agno for intelligent model orchestration, successfully integrating LLM APIs and REST services.</li><li>Integrating third-party tools into scalable AI pipelines, optimizing API response times.</li></ul>
+      </div>
+      
+      <div class="xp">
+        <div class="t">IT INTERN</div>
+        <div class="c">SFR Medical · London, UK · August 2023 → September 2023</div>
+        <ul><li>Worked for a MedTech firm providing medical evidence support to UK police forces.</li><li>Developed and maintained website features including cookie consent management.</li><li>Built and deployed a customer-facing chatbot for internal and external queries.</li><li>Created an automated salary slip generation workflow to streamline HR operations.</li><li>Organized and managed internal documentation and reporting systems.</li></ul>
+      </div>
+      
+      
+      <div class="xp"><div class="t">B.Tech – Computer Science</div>
+        <div class="c">LNCTS · 2020 – 2024 · GPA 8.12 CGPA</div></div>
+      
+      <div class="xp"><div class="t">Senior Secondary (PCM)</div>
+        <div class="c">Priyadarshni HSS · 2019 – 2020 · GPA 60%</div></div>
+      
+    </div>
+  </section>
+  
+</div>
+
+<div class="term">
+  <div id="tout"></div>
+  <span class="prompt"><b>guest</b>@jay-dhangar:~$</span>
+  <input id="tin" autocomplete="off" spellcheck="false" placeholder="type 'help' and press Enter…"/>
+  <div class="hint">try: help · skills · contact · sudo hire-me · (and squash the bugs crawling on screen)</div>
+</div>
+
+<script>
+(function(){
+  var reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function type(el, done){
+    var text = el.dataset.type, i = 0;
+    if (reduced) { el.textContent = text; done && done(); return; }
+    (function tick(){
+      el.textContent = text.slice(0, ++i);
+      if (i < text.length) setTimeout(tick, 34 + Math.random()*40); else done && done();
+    })();
+  }
+  var hero = document.querySelector('#hero .typed');
+  var reveal0 = document.querySelector('#hero [data-reveal]');
+  reveal0.style.opacity = 0;
+  type(hero, function(){
+    var c = document.getElementById('c0'); if (c) c.remove();
+    reveal0.style.transition = 'opacity .6s'; reveal0.style.opacity = 1;
+  });
+  var io = new IntersectionObserver(function(es){
+    es.forEach(function(e){
+      if (!e.isIntersecting || e.target.classList.contains('on')) return;
+      e.target.classList.add('on');
+      var t = e.target.querySelector('.typed'), out = e.target.querySelector('[data-reveal]');
+      if (t && out) { out.style.opacity = 0; type(t, function(){ out.style.transition='opacity .6s'; out.style.opacity = 1; }); }
+    });
+  }, { threshold: 0.25 });
+  document.querySelectorAll('section:not(#hero)').forEach(function(s){ io.observe(s); });
+
+  var THEMES = { green: '51,255,102', amber: '255,190,60', cyan: '80,220,255', pink: '255,110,199' };
+  function setTheme(name){
+    var rgb = THEMES[name]; if (!rgb) return false;
+    var hex = '#' + rgb.split(',').map(function(v){ return (+v).toString(16).padStart(2,'0'); }).join('');
+    var st = document.createElement('style');
+    st.textContent = ':root{--acc:' + hex + ';--dim:rgba(' + rgb + ',.55)}' +
+      '.chip{border-color:rgba(' + rgb + ',.35)} .proj{border-color:rgba(' + rgb + ',.3)}' +
+      '.xp{border-color:rgba(' + rgb + ',.4)} .bar{border-color:rgba(' + rgb + ',.25)}' +
+      '.term{border-color:rgba(' + rgb + ',.4)}';
+    document.head.appendChild(st);
+    return true;
+  }
+  var NEOFETCH = [
+    '   ╭─────────────╮   JAY DHANGAR',
+    '   │  ▄▄▄   ▄▄▄  │   ─────────────────────────',
+    '   │  ███   ███  │   role:     AI ENGINEER',
+    '   │      ▄      │   os:       Human v2024',
+    '   │  ▀▀▀▀▀▀▀▀▀  │   shell:    python',
+    '   ╰─────────────╯   memory:   39 skills loaded',
+    '                     uptime:   2 roles, 4 projects',
+    '                     location: Bhopal, India',
+    '                     contact:  dhangarjay447@gmail.com'
+  ].join('\n');
+  function matrix(){
+    var cv = document.createElement('canvas'); cv.style.cssText =
+      'position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.86)';
+    document.body.appendChild(cv);
+    cv.width = innerWidth; cv.height = innerHeight;
+    var g = cv.getContext('2d'), cols = Math.floor(innerWidth / 16), drops = [];
+    for (var i = 0; i < cols; i++) drops[i] = Math.random() * -40;
+    var iv = setInterval(function(){
+      g.fillStyle = 'rgba(0,0,0,0.08)'; g.fillRect(0, 0, cv.width, cv.height);
+      g.fillStyle = 'rgb(51, 255, 102)'; g.font = '15px monospace';
+      drops.forEach(function(y, i){
+        g.fillText(String.fromCharCode(0x30a0 + Math.random() * 96), i * 16, y * 16);
+        drops[i] = y * 16 > cv.height && Math.random() > .975 ? 0 : y + 1;
+      });
+    }, 40);
+    setTimeout(function(){ clearInterval(iv); cv.remove(); }, 5200);
+    return 'wake up, recruiter…';
+  }
+  var RESP = {
+    help: 'commands: about · skills · projects · contact · neofetch · theme <green|amber|cyan|pink> · matrix · clear · sudo hire-me   (↑ history · Tab complete)',
+    about: "AI Engineer specializing in Agentic AI and Automation, with hands-on experience building autonomous and multi-agent systems using LangChain, LangGraph, CrewAI, and Agno. Proven expertise in developing production-level AI applications, workflow automation, API integrations, and multimodal AI including OCR, image generation, video creation, and TTS.",
+    skills: "Python, SQL, OpenAI API, GPT-4o, Groq, LangChain, LangGraph, CrewAI, Agno, RAG, FAISS, Embeddings, Prompt Engineering, Multi-Agent Systems, LLM Orchestration, Web Search, OCR, TTS, Image Generation, FastAPI, REST APIs, Webhooks, OAuth2, Workflow Automation",
+    projects: "AI-POWERED MEDIA \u0026 CONTENT GENERATION SUITE \u00b7 MULTI-AGENT AI RECRUITMENT ASSISTANT \u00b7 ChristianAI \u2014 AI \u0026 Backend Engineer \u00b7 Mendle \u2014 AI \u0026 Backend Engineer",
+    contact: 'email: dhangarjay447@gmail.com · github: github.com/JayDhangar',
+    neofetch: NEOFETCH,
+    whoami: 'JAY DHANGAR · AI ENGINEER',
+    matrix: matrix,
+    'sudo hire-me': 'Permission granted ✔ dhangarjay447@gmail.com is waiting for your message.'
+  };
+  var CMDS = Object.keys(RESP).concat(['clear', 'theme ']);
+  var tin = document.getElementById('tin'), tout = document.getElementById('tout');
+  var history = [], hi = -1;
+  tin.addEventListener('keydown', function(ev){
+    if (ev.key === 'ArrowUp') { ev.preventDefault();
+      if (history.length) { hi = Math.min(hi + 1, history.length - 1); tin.value = history[history.length - 1 - hi]; } return; }
+    if (ev.key === 'ArrowDown') { ev.preventDefault();
+      if (hi > 0) { hi--; tin.value = history[history.length - 1 - hi]; } else { hi = -1; tin.value = ''; } return; }
+    if (ev.key === 'Tab') { ev.preventDefault();
+      var v = tin.value.toLowerCase();
+      var match = CMDS.filter(function(c){ return c.indexOf(v) === 0 && v; })[0];
+      if (match) tin.value = match; return; }
+    if (ev.key !== 'Enter') return;
+    var q = tin.value.trim().toLowerCase(); tin.value = ''; hi = -1;
+    if (!q) return;
+    history.push(q);
+    if (q === 'clear') { tout.innerHTML = ''; return; }
+    var line = document.createElement('div');
+    line.innerHTML = '<span class="prompt">$</span> ' + q.replace(/</g,'&lt;');
+    tout.appendChild(line);
+    var ans = document.createElement('pre');
+    ans.style.cssText = 'margin:0;font:inherit;white-space:pre-wrap';
+    if (q.indexOf('theme ') === 0) {
+      ans.textContent = setTheme(q.slice(6).trim()) ? 'theme applied ✔' : 'themes: green · amber · cyan · pink';
+    } else {
+      var r = RESP[q];
+      ans.textContent = typeof r === 'function' ? r() : (r || ("command not found: " + q + ". Try 'help'."));
+    }
+    tout.appendChild(ans);
+    tout.scrollTop = tout.scrollHeight;
+  });
+
+  /* system bugs: your skills crawl the screen as pixel invaders. squash to recover. */
+  var BUGSK = ["Python", "SQL", "OpenAI API", "GPT-4o", "Groq", "LangChain", "LangGraph", "CrewAI"];
+  if (!reduced && BUGSK.length) {
+    var MAP = ['00100000100','00010001000','00111111100','01101110110',
+               '11111111111','10111111101','10100000101','00011011000'];
+    var RECTS = '';
+    MAP.forEach(function(row, y){ for (var x = 0; x < row.length; x++)
+      if (row[x] === '1') RECTS += '<rect x="' + x + '" y="' + y + '" width="1" height="1"/>'; });
+    var SPRITE = '<svg viewBox="0 0 11 8" fill="rgb(51, 255, 102)" xmlns="http://www.w3.org/2000/svg">' + RECTS + '</svg>';
+    var toast = document.createElement('div'); toast.className = 'bugtoast';
+    document.body.appendChild(toast);
+    var squashed = 0, toastT;
+    function note(msg){
+      toast.textContent = msg; toast.classList.add('on');
+      clearTimeout(toastT); toastT = setTimeout(function(){ toast.classList.remove('on'); }, 2600);
+    }
+    var docH = Math.max(innerHeight, document.documentElement.scrollHeight);
+    var crawlers = BUGSK.map(function(skill, i){
+      var el = document.createElement('div'); el.className = 'bug'; el.innerHTML = SPRITE;
+      document.body.appendChild(el);
+      // each bug guards its own patch of the page, spread top to bottom
+      var hx = 30 + Math.random() * Math.max(80, innerWidth - 90);
+      var hy = 130 + (i + .2 + Math.random() * .6) / BUGSK.length * Math.max(200, docH - 480);
+      var b = { el: el, skill: skill, dead: false, x: hx, y: hy, hx: hx, hy: hy,
+                a: Math.random() * 6.28, t: Math.random() * 100,
+                state: 'walk', left: 80 + Math.random() * 140, flip: false };
+      el.addEventListener('click', function(){
+        if (b.dead) return; b.dead = true; squashed++;
+        var rc = el.getBoundingClientRect(), cx = rc.left + rc.width / 2, cy = rc.top + rc.height / 2;
+        el.remove();
+        for (var k = 0; k < 14; k++) (function(){
+          var px = document.createElement('i'); px.className = 'pxx';
+          px.style.left = cx + 'px'; px.style.top = cy + 'px';
+          document.body.appendChild(px);
+          var ang = Math.random() * 6.28, d = 26 + Math.random() * 46;
+          requestAnimationFrame(function(){ requestAnimationFrame(function(){
+            px.style.transform = 'translate(' + Math.cos(ang) * d + 'px,' + Math.sin(ang) * d + 'px) scale(0)';
+            px.style.opacity = 0;
+          }); });
+          setTimeout(function(){ px.remove(); }, 800);
+        })();
+        var nm = document.createElement('div'); nm.className = 'bugname glow';
+        nm.textContent = b.skill; nm.style.left = cx + 'px'; nm.style.top = cy + 'px';
+        document.body.appendChild(nm); setTimeout(function(){ nm.remove(); }, 1600);
+        note(squashed === BUGSK.length
+          ? 'all ' + BUGSK.length + ' bugs squashed ✔ system clean. skills recovered.'
+          : 'bug squashed: ' + b.skill + ' · ' + squashed + '/' + BUGSK.length);
+      });
+      return b;
+    });
+    (function crawl(){
+      crawlers.forEach(function(b){
+        if (b.dead) return;
+        b.t++;
+        // stop-and-go: walk a while, pause and look around, then wander again
+        if (--b.left <= 0) {
+          if (b.state === 'walk') { b.state = 'idle'; b.left = 70 + Math.random() * 130; }
+          else { b.state = 'walk'; b.left = 80 + Math.random() * 140; b.a = Math.random() * 6.28; }
+        }
+        var rot;
+        if (b.state === 'walk') {
+          b.a += (Math.random() - .5) * .08;
+          // stay near home turf so bugs don't swarm the same spot
+          var dx = b.hx - b.x, dy = b.hy - b.y;
+          if (dx * dx + dy * dy > 130 * 130) b.a = Math.atan2(dy, dx);
+          var sp = .5 + Math.sin(b.t * .35) * .3;  // stepping gait
+          b.x += Math.cos(b.a) * sp; b.y += Math.sin(b.a) * sp;
+          if (b.x < 6) { b.x = 6; b.a = Math.PI - b.a; }
+          if (b.x > innerWidth - 32) { b.x = innerWidth - 32; b.a = Math.PI - b.a; }
+          if (b.y < 60) { b.y = 60; b.a = -b.a; }
+          if (b.y > docH - 160) { b.y = docH - 160; b.a = -b.a; }
+          b.flip = Math.cos(b.a) < 0;
+          rot = Math.sin(b.t * .4) * 8;
+        } else {
+          rot = Math.sin(b.t * .09) * 20;  // idle: turning its head, scanning
+        }
+        b.el.style.transform = 'translate(' + b.x + 'px,' + b.y + 'px)' +
+          ' rotate(' + rot + 'deg)' + (b.flip ? ' scaleX(-1)' : '');
+      });
+      requestAnimationFrame(crawl);
+    })();
+  }
+})();
+</script>
+</body>
+</html>

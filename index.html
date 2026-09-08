@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jay Dhangar | Portfolio Hub</title>
+<meta name="description" content="Jay Dhangar — AI Engineer / Generative AI Engineer. Pick a portfolio experience.">
+<style>
+  :root {
+    --bg: #08090f; --bg2: #0d0f18; --text: #eef0f8; --muted: #9aa1b8;
+    --border: rgba(255,255,255,0.1); --glass: rgba(255,255,255,0.04);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: radial-gradient(ellipse 80% 50% at 50% -10%, rgba(124,95,232,0.25), transparent),
+                var(--bg);
+    color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif;
+    min-height: 100vh; -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 0 32px; }
+
+  header { display: flex; align-items: center; justify-content: space-between; padding: 28px 0; }
+  .logo { display: flex; align-items: center; gap: 10px; font-weight: 700; letter-spacing: 1px; }
+  .logo .mark {
+    width: 34px; height: 34px; border-radius: 9px;
+    background: linear-gradient(135deg, #6d87ff, #7c5fe8);
+    display: flex; align-items: center; justify-content: center; font-size: 15px;
+  }
+  .connect {
+    color: var(--text); text-decoration: none; font-size: 14px; font-weight: 600;
+    border: 1px solid var(--border); padding: 10px 18px; border-radius: 30px;
+    display: inline-flex; align-items: center; gap: 8px; transition: all .2s;
+  }
+  .connect:hover { background: var(--glass); border-color: rgba(255,255,255,0.25); }
+
+  .hero { text-align: center; padding: 60px 0 20px; }
+  .eyebrow {
+    color: #9aa1ff; font-size: 13px; font-weight: 700; letter-spacing: 4px; text-transform: uppercase;
+  }
+  h1 { font-size: clamp(34px, 6vw, 58px); margin: 18px 0 16px; line-height: 1.15; }
+  h1 .grad {
+    background: linear-gradient(90deg, #6d87ff, #b6a7f2, #7c5fe8);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  .sub { color: var(--muted); font-size: 17px; max-width: 640px; margin: 0 auto; line-height: 1.6; }
+
+  .grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 24px; padding: 56px 0 40px;
+  }
+  .card {
+    background: var(--glass); border: 1px solid var(--border); border-radius: 20px;
+    padding: 22px; display: flex; flex-direction: column; text-decoration: none; color: var(--text);
+    transition: transform .25s ease, border-color .25s ease, box-shadow .25s ease;
+  }
+  .card:hover { transform: translateY(-6px); border-color: var(--acc, rgba(255,255,255,0.3));
+    box-shadow: 0 16px 40px -12px rgba(0,0,0,0.5); }
+
+  .preview {
+    height: 130px; border-radius: 12px; margin-bottom: 18px; position: relative; overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+  .preview .bar { height: 20px; background: rgba(0,0,0,0.25); display: flex; align-items: center; gap: 5px; padding: 0 8px; }
+  .preview .bar span { width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,0.35); }
+  .preview .body { padding: 14px; }
+  .preview .ln { height: 8px; border-radius: 4px; margin-bottom: 8px; }
+
+  .num {
+    width: 26px; height: 26px; border-radius: 50%; font-size: 12px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center; margin-bottom: 14px;
+    background: var(--glass); border: 1px solid var(--border);
+  }
+  .card h3 { font-size: 19px; margin-bottom: 8px; }
+  .card p.desc { color: var(--muted); font-size: 14px; line-height: 1.55; margin-bottom: 16px; flex: 1; }
+  .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 20px; }
+  .tags span {
+    font-size: 11px; padding: 5px 10px; border-radius: 20px; border: 1px solid var(--border);
+    color: var(--muted);
+  }
+  .cta {
+    display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+    padding: 11px 0; border-radius: 30px; font-size: 14px; font-weight: 700;
+    background: var(--acc, #fff); color: var(--onacc, #08090f); transition: filter .2s;
+  }
+  .card:hover .cta { filter: brightness(1.1); }
+
+  /* per-card theme accents */
+  .c-aurora { --acc: linear-gradient(135deg,#6d87ff,#aebdff); --onacc:#0a0e1f; }
+  .c-aurora .preview { background: #090c18; }
+  .c-aurora .preview .ln:nth-child(1) { background: linear-gradient(90deg,#6d87ff,#aebdff); width: 55%; }
+  .c-aurora .preview .ln:nth-child(2) { background: rgba(255,255,255,0.15); width: 75%; }
+  .c-aurora .preview .ln:nth-child(3) { background: rgba(255,255,255,0.08); width: 40%; }
+
+  .c-bento { --acc: linear-gradient(135deg,#7c5fe8,#b6a7f2); --onacc:#fff; }
+  .c-bento .preview { background: #0d0f16; display: grid; grid-template-columns: 1fr 1fr; gap: 6px; padding: 10px; }
+  .c-bento .preview .box { border-radius: 8px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.08); }
+  .c-bento .preview .box.a { background: linear-gradient(135deg,#7c5fe8,#b6a7f2); grid-row: span 2; }
+
+  .c-kinetic { --acc: #e8505b; --onacc: #fff; }
+  .c-kinetic .preview { background: #f6f2ea; }
+  .c-kinetic .preview .ln { background: #16130f22; }
+  .c-kinetic .preview .ln:nth-child(1) { background: #e8505b; width: 45%; height: 10px; }
+  .c-kinetic .preview .ln:nth-child(2) { width: 80%; }
+  .c-kinetic .preview .ln:nth-child(3) { width: 60%; }
+
+  .c-terminal { --acc: #33ff66; --onacc: #07130a; }
+  .c-terminal .preview { background: #070a08; font-family: Consolas, monospace; }
+  .c-terminal .preview .ln { background: #1c8c38; }
+  .c-terminal .preview .ln:nth-child(1) { width: 50%; }
+  .c-terminal .preview .ln:nth-child(2) { background: #33ff66; width: 70%; }
+  .c-terminal .preview .ln:nth-child(3) { width: 35%; }
+
+  footer {
+    border-top: 1px solid var(--border); padding: 28px 0 40px;
+    display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;
+    color: var(--muted); font-size: 13px;
+  }
+  footer .quote { text-align: center; flex: 1; font-style: italic; }
+  footer .social { display: flex; gap: 14px; }
+  footer .social a { color: var(--muted); text-decoration: none; }
+  footer .social a:hover { color: var(--text); }
+
+  @media (max-width: 640px) {
+    header, footer { flex-direction: column; text-align: center; }
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="logo"><span class="mark">JD</span> JAY DHANGAR</div>
+      <a class="connect" href="mailto:dhangarjay447@gmail.com">Let's Connect →</a>
+    </header>
+
+    <section class="hero">
+      <div class="eyebrow">Same Portfolio · Four Experiences</div>
+      <h1>One Portfolio.<br><span class="grad">Multiple Styles.</span></h1>
+      <p class="sub">Explore my work through four different visual experiences — same story, different vibe. Pick the one that speaks to you.</p>
+    </section>
+
+    <div class="grid">
+      <a class="card c-aurora" href="portfolio-aurora.html">
+        <div class="preview"><div class="bar"><span></span><span></span><span></span></div>
+          <div class="body"><div class="ln"></div><div class="ln"></div><div class="ln"></div></div></div>
+        <div class="num">1</div>
+        <h3>Aurora Dark</h3>
+        <p class="desc">A moody, glassy dark theme with soft aurora gradients and smooth motion.</p>
+        <div class="tags"><span>Modern</span><span>Glassy</span><span>Animated</span></div>
+        <span class="cta">View Portfolio →</span>
+      </a>
+
+      <a class="card c-bento" href="portfolio-bento.html">
+        <div class="preview"><div class="box a"></div><div class="box"></div><div class="box"></div></div>
+        <div class="num">2</div>
+        <h3>Bento Grid</h3>
+        <p class="desc">A structured, card-based layout inspired by bento boxes, with light/dark toggle.</p>
+        <div class="tags"><span>Structured</span><span>Versatile</span><span>Clean</span></div>
+        <span class="cta">View Portfolio →</span>
+      </a>
+
+      <a class="card c-kinetic" href="portfolio-kinetic.html">
+        <div class="preview" style="padding:14px"><div class="ln" style="border-radius:4px;margin-bottom:8px"></div><div class="ln" style="height:8px;border-radius:4px;margin-bottom:8px"></div><div class="ln" style="height:8px;border-radius:4px"></div></div>
+        <div class="num">3</div>
+        <h3>Minimal Editorial</h3>
+        <p class="desc">A calm, paper-toned layout with serif typography and kinetic text reveals.</p>
+        <div class="tags"><span>Minimal</span><span>Elegant</span><span>Editorial</span></div>
+        <span class="cta">View Portfolio →</span>
+      </a>
+
+      <a class="card c-terminal" href="portfolio-terminal.html">
+        <div class="preview" style="padding:14px"><div class="ln" style="height:8px;border-radius:4px;margin-bottom:8px"></div><div class="ln" style="height:8px;border-radius:4px;margin-bottom:8px"></div><div class="ln" style="height:8px;border-radius:4px"></div></div>
+        <div class="num">4</div>
+        <h3>Terminal / Tech</h3>
+        <p class="desc">A developer-themed interface inspired by terminal UIs, with a retro CLI look.</p>
+        <div class="tags"><span>Developer</span><span>Retro</span><span>Unique</span></div>
+        <span class="cta">View Portfolio →</span>
+      </a>
+    </div>
+
+    <footer>
+      <span>📍 Bhopal, India</span>
+      <span class="quote">"Same journey. Different perspectives." — Jay Dhangar</span>
+      <div class="social">
+        <a href="https://github.com/JayDhangar" target="_blank">GitHub</a>
+        <a href="mailto:dhangarjay447@gmail.com">Email</a>
+      </div>
+    </footer>
+  </div>
+</body>
+</html>
