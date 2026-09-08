@@ -4,187 +4,640 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Jay Dhangar | Portfolio Hub</title>
-<meta name="description" content="Jay Dhangar — AI Engineer / Generative AI Engineer. Pick a portfolio experience.">
+<meta name="description" content="Jay Dhangar — AI Engineer / Generative AI Engineer. One portfolio, four visual experiences.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=Caveat:wght@600&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #08090f; --bg2: #0d0f18; --text: #eef0f8; --muted: #9aa1b8;
-    --border: rgba(255,255,255,0.1); --glass: rgba(255,255,255,0.04);
+    --bg: #05060c;
+    --text: #eef0fb;
+    --muted: #9096b5;
+    --border: rgba(255,255,255,0.08);
+    --glass: rgba(255,255,255,0.035);
+    --ease: cubic-bezier(.16,.84,.44,1);
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
   body {
-    background: radial-gradient(ellipse 80% 50% at 50% -10%, rgba(124,95,232,0.25), transparent),
-                var(--bg);
-    color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif;
-    min-height: 100vh; -webkit-font-smoothing: antialiased;
+    background: var(--bg); color: var(--text);
+    font-family: 'Inter', system-ui, sans-serif;
+    min-height: 100vh; overflow-x: hidden; -webkit-font-smoothing: antialiased;
+    position: relative;
   }
-  .wrap { max-width: 1180px; margin: 0 auto; padding: 0 32px; }
+  h1, h2, h3, .brand { font-family: 'Space Grotesk', system-ui, sans-serif; }
+  a { color: inherit; }
+  .wrap { max-width: 1240px; margin: 0 auto; padding: 0 32px; position: relative; z-index: 2; }
 
-  header { display: flex; align-items: center; justify-content: space-between; padding: 28px 0; }
-  .logo { display: flex; align-items: center; gap: 10px; font-weight: 700; letter-spacing: 1px; }
-  .logo .mark {
-    width: 34px; height: 34px; border-radius: 9px;
-    background: linear-gradient(135deg, #6d87ff, #7c5fe8);
-    display: flex; align-items: center; justify-content: center; font-size: 15px;
+  /* ================= BACKGROUND LAYERS ================= */
+  .bg-fixed { position: fixed; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; }
+  .bg-fixed .grain {
+    position: absolute; inset: -200px;
+    background-image: radial-gradient(rgba(255,255,255,0.55) 0.6px, transparent 0.6px);
+    background-size: 3px 3px; opacity: 0.045; mix-blend-mode: overlay;
+    animation: grainshift 50s linear infinite;
+  }
+  @keyframes grainshift { to { background-position: 60px 90px; } }
+
+  .blob { position: absolute; border-radius: 50%; filter: blur(90px); opacity: 0.5; animation: drift 28s ease-in-out infinite; }
+  .blob.b1 { width: 46vw; height: 46vw; top: -18vw; left: -12vw; background: radial-gradient(circle, rgba(109,135,255,0.55), transparent 70%); }
+  .blob.b2 { width: 38vw; height: 38vw; top: 8vh; right: -14vw; background: radial-gradient(circle, rgba(169,124,240,0.45), transparent 70%); animation-delay: -8s; animation-duration: 34s; }
+  .blob.b3 { width: 30vw; height: 30vw; bottom: -10vw; left: 20vw; background: radial-gradient(circle, rgba(255,107,107,0.2), transparent 70%); animation-delay: -14s; animation-duration: 32s; }
+  @keyframes drift {
+    0%, 100% { transform: translate(0,0) scale(1); }
+    33% { transform: translate(3vw, 4vh) scale(1.08); }
+    66% { transform: translate(-3vw, -2vh) scale(0.96); }
+  }
+
+  #stars { position: absolute; inset: -5% -5% -5% -5%; animation: starsdrift 140s linear infinite alternate; }
+  @keyframes starsdrift { to { transform: translate(-1.5%, 1.5%); } }
+  .star { position: absolute; width: 2px; height: 2px; background: #fff; border-radius: 50%; animation: twinkle 4s ease-in-out infinite; }
+  @keyframes twinkle { 0%, 100% { opacity: 0.15; } 50% { opacity: 0.9; } }
+
+  .orbit-ring {
+    position: absolute; top: 50%; left: 50%; border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 50%; transform: translate(-50%,-50%) rotateX(72deg); animation: spin 70s linear infinite;
+  }
+  .orbit-ring.r1 { width: 900px; height: 900px; }
+  .orbit-ring.r2 { width: 1200px; height: 1200px; border-color: rgba(169,124,240,0.05); animation-duration: 100s; animation-direction: reverse; }
+  @keyframes spin { to { transform: translate(-50%,-50%) rotateX(72deg) rotate(360deg); } }
+
+  /* floating geometric shapes: outer = scroll parallax (JS), mid = ambient bob (CSS), inner = self rotation (CSS) */
+  .pf-cube { position: absolute; top: 190px; left: 4%; will-change: transform; }
+  .cube-wrap { perspective: 900px; width: 120px; height: 120px; animation: bob 7s ease-in-out infinite; }
+  .cube {
+    position: relative; width: 100%; height: 100%; transform-style: preserve-3d;
+    transform: rotateX(-24deg) rotateY(38deg); animation: cubeSway 11s ease-in-out infinite;
+  }
+  .cube .face {
+    position: absolute; width: 120px; height: 120px; backface-visibility: hidden;
+    border: 1px solid rgba(169,183,255,0.32);
+    background: linear-gradient(135deg, rgba(109,135,255,0.10), rgba(169,124,240,0.04));
+  }
+  .cube .face.front  { transform: translateZ(60px); display:flex; align-items:center; justify-content:center; }
+  .cube .face.back   { transform: translateZ(-60px) rotateY(180deg); }
+  .cube .face.right  { transform: rotateY(90deg) translateZ(60px); }
+  .cube .face.left   { transform: rotateY(-90deg) translateZ(60px); }
+  .cube .face.top    { transform: rotateX(90deg) translateZ(60px); }
+  .cube .face.bottom { transform: rotateX(-90deg) translateZ(60px); }
+  .cube .face.front span { font-size: 8px; letter-spacing: 2px; color: rgba(220,226,255,0.65); text-align: center; line-height: 1.6; }
+  @keyframes cubeSway { 0%,100% { transform: rotateX(-24deg) rotateY(28deg); } 50% { transform: rotateX(-20deg) rotateY(48deg); } }
+  @keyframes bob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-18px); } }
+
+  .pf-sphere { position: absolute; top: 130px; right: 6%; will-change: transform; }
+  .sphere-wrap { position: relative; width: 190px; height: 190px; animation: bob 9s ease-in-out infinite; animation-delay: -3s; }
+  .sphere {
+    width: 100%; height: 100%; border-radius: 50%; position: relative;
+    background:
+      radial-gradient(circle at 32% 28%, rgba(255,255,255,0.55), transparent 40%),
+      radial-gradient(circle at 60% 65%, rgba(169,124,240,0.5), transparent 60%),
+      radial-gradient(circle at 50% 50%, #4a5ee0, #1a1440 75%);
+    box-shadow: 0 0 60px rgba(109,135,255,0.32), inset -14px -14px 40px rgba(0,0,0,0.5);
+  }
+  .sphere-ring {
+    position: absolute; inset: -26px; border: 1px solid rgba(169,183,255,0.38); border-radius: 50%;
+    animation: ringspin 14s linear infinite;
+  }
+  .sphere-ring::after {
+    content: ''; position: absolute; width: 8px; height: 8px; border-radius: 50%;
+    background: #cdd6ff; box-shadow: 0 0 10px 3px rgba(205,214,255,0.8);
+    top: 50%; left: 100%; margin: -4px 0 0 -4px;
+  }
+  @keyframes ringspin { from { transform: rotate(-18deg) scaleY(0.32); } to { transform: rotate(342deg) scaleY(0.32); } }
+
+  .shard { position: absolute; opacity: 0.45; animation: bob 8s ease-in-out infinite; }
+  .shard svg { display: block; filter: drop-shadow(0 0 10px rgba(109,135,255,0.3)); }
+  .shard.s1 { top: 70px; left: 22%; animation-delay: -2s; width: 34px; }
+  .shard.s2 { bottom: 60px; right: 18%; animation-delay: -5s; width: 26px; }
+
+  @media (max-width: 900px) {
+    .pf-cube, .pf-sphere, .shard, .orbit-ring { display: none; }
+  }
+
+  /* ambient per-card lighting, sits above bg, below content */
+  .ambient-glow {
+    position: fixed; inset: 0; z-index: 1; pointer-events: none; opacity: 0;
+    mix-blend-mode: screen; transition: opacity .8s ease;
+  }
+  .ambient-glow[data-theme="aurora"]   { background: radial-gradient(circle at 25% 15%, rgba(109,135,255,0.4), transparent 62%); }
+  .ambient-glow[data-theme="bento"]    { background: radial-gradient(circle at 75% 20%, rgba(169,124,240,0.4), transparent 62%); }
+  .ambient-glow[data-theme="kinetic"]  { background: radial-gradient(circle at 50% 25%, rgba(255,140,100,0.32), transparent 62%); }
+  .ambient-glow[data-theme="terminal"] { background: radial-gradient(circle at 50% 75%, rgba(51,255,138,0.3), transparent 62%); }
+  .ambient-glow.active { opacity: 1; }
+
+  /* custom cursor */
+  .cursor {
+    position: fixed; top: 0; left: 0; width: 9px; height: 9px; border-radius: 50%;
+    background: #cdd6ff; box-shadow: 0 0 12px 3px rgba(205,214,255,.55);
+    pointer-events: none; z-index: 999; transform: translate(-50%,-50%);
+    display: flex; align-items: center; justify-content: center;
+    transition: width .3s var(--ease), height .3s var(--ease), background .3s ease, box-shadow .3s ease;
+  }
+  .cursor .cursor-label { opacity: 0; font-size: 9px; letter-spacing: 1.5px; font-weight: 700; color: #05060c; transition: opacity .2s ease; white-space: nowrap; }
+  .cursor.hover-card { width: 58px; height: 58px; background: rgba(238,240,251,0.92); box-shadow: 0 0 24px rgba(205,214,255,.35); }
+  .cursor.hover-card .cursor-label { opacity: 1; }
+  body.has-cursor, body.has-cursor a, body.has-cursor .card { cursor: none; }
+
+  /* ================= HEADER ================= */
+  header { position: sticky; top: 0; z-index: 20; padding: 14px 0; }
+  .header-inner {
+    max-width: 1240px; margin: 0 auto; padding: 9px 18px;
+    display: flex; align-items: center; justify-content: space-between;
+    background: rgba(9,10,18,0.42); backdrop-filter: blur(22px) saturate(150%);
+    border: 1px solid var(--border); border-radius: 16px;
+    transition: padding .35s var(--ease), background .35s ease, border-color .3s ease, box-shadow .3s ease;
+  }
+  .header-inner:hover { border-color: rgba(169,183,255,0.24); box-shadow: 0 0 26px -10px rgba(109,135,255,0.32); }
+  .header-inner.scrolled { padding: 6px 16px; background: rgba(7,8,15,0.72); }
+  .brand { display: flex; align-items: center; gap: 9px; font-weight: 700; letter-spacing: 0.4px; font-size: 13px; }
+  .brand .mark {
+    width: 28px; height: 28px; border-radius: 8px; font-size: 11.5px;
+    background: linear-gradient(135deg, #6d87ff, #a97cf0);
+    display: flex; align-items: center; justify-content: center; font-weight: 700;
+    box-shadow: 0 0 16px rgba(109,135,255,0.45);
+  }
+  nav.mainnav { display: flex; gap: 26px; }
+  nav.mainnav a {
+    text-decoration: none; color: var(--muted); font-size: 13px; font-weight: 500;
+    position: relative; padding-bottom: 3px; transition: color .2s ease;
+  }
+  nav.mainnav a:hover, nav.mainnav a.active { color: var(--text); }
+  nav.mainnav a.active::after {
+    content: ''; position: absolute; left: 0; right: 0; bottom: -4px; height: 2px;
+    background: linear-gradient(90deg, #6d87ff, #a97cf0); border-radius: 2px;
   }
   .connect {
-    color: var(--text); text-decoration: none; font-size: 14px; font-weight: 600;
-    border: 1px solid var(--border); padding: 10px 18px; border-radius: 30px;
-    display: inline-flex; align-items: center; gap: 8px; transition: all .2s;
+    text-decoration: none; font-size: 12.5px; font-weight: 600;
+    border: 1px solid rgba(169,183,255,0.3); padding: 8px 14px; border-radius: 30px;
+    display: inline-flex; align-items: center; gap: 7px;
+    background: linear-gradient(180deg, rgba(109,135,255,0.1), rgba(169,124,240,0.04));
+    transition: border-color .25s ease, box-shadow .25s ease;
   }
-  .connect:hover { background: var(--glass); border-color: rgba(255,255,255,0.25); }
+  .connect:hover { border-color: rgba(169,183,255,0.65); box-shadow: 0 0 20px rgba(109,135,255,0.35); }
+  .connect .dot { width: 6px; height: 6px; border-radius: 50%; background: #33ff8a; box-shadow: 0 0 8px 2px rgba(51,255,138,0.8); animation: pulse 1.8s ease-in-out infinite; }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.35; } }
 
-  .hero { text-align: center; padding: 60px 0 20px; }
-  .eyebrow {
-    color: #9aa1ff; font-size: 13px; font-weight: 700; letter-spacing: 4px; text-transform: uppercase;
-  }
-  h1 { font-size: clamp(34px, 6vw, 58px); margin: 18px 0 16px; line-height: 1.15; }
-  h1 .grad {
-    background: linear-gradient(90deg, #6d87ff, #b6a7f2, #7c5fe8);
-    -webkit-background-clip: text; background-clip: text; color: transparent;
-  }
-  .sub { color: var(--muted); font-size: 17px; max-width: 640px; margin: 0 auto; line-height: 1.6; }
+  @media (max-width: 760px) { nav.mainnav { display: none; } }
 
-  .grid {
-    display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 24px; padding: 56px 0 40px;
+  /* ================= HERO ================= */
+  .hero { text-align: center; padding: 88px 0 28px; position: relative; }
+  .eyebrow-top { color: #aab3ff; font-size: 11.5px; font-weight: 600; letter-spacing: 5px; text-transform: uppercase; opacity: 0.85; }
+  h1.headline { font-size: clamp(36px, 6.4vw, 66px); margin: 20px 0 18px; line-height: 1.08; font-weight: 700; letter-spacing: -1.2px; }
+  h1.headline .grad {
+    background: linear-gradient(90deg, #6d87ff, #cdd6ff, #a97cf0, #6d87ff);
+    background-size: 300% auto; -webkit-background-clip: text; background-clip: text; color: transparent;
+    animation: gradflow 8s linear infinite;
   }
+  @keyframes gradflow { to { background-position: 300% center; } }
+  .sub { color: #a7addc; font-size: 16.5px; max-width: 600px; margin: 0 auto; line-height: 1.7; }
+  .signature { font-family: 'Caveat', cursive; font-size: 30px; color: rgba(205,214,255,0.72); margin-top: 24px; transform: rotate(-2deg); display: inline-block; }
+
+  .reveal { opacity: 0; transform: translateY(28px); transition: opacity .8s var(--ease), transform .8s var(--ease); }
+  .reveal.in { opacity: 1; transform: translateY(0); }
+
+  /* choose-your-experience transition */
+  .choose { display: flex; align-items: center; gap: 18px; max-width: 620px; margin: 76px auto 0; }
+  .choose-line { flex: 1; height: 1px; background: linear-gradient(90deg, transparent, rgba(169,183,255,.45), transparent); position: relative; overflow: hidden; }
+  .choose-line::after {
+    content: ''; position: absolute; top: 0; bottom: 0; width: 40%; left: -40%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,.9), transparent);
+    animation: sweep 5s ease-in-out infinite;
+  }
+  @keyframes sweep { 0% { left: -40%; } 100% { left: 100%; } }
+  .choose-text { font-size: 11.5px; letter-spacing: 4px; text-transform: uppercase; color: #aab3ff; white-space: nowrap; font-weight: 600; }
+
+  /* ================= CARDS ================= */
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(255px, 1fr)); gap: 26px; padding: 44px 0 30px; perspective: 1400px; }
   .card {
-    background: var(--glass); border: 1px solid var(--border); border-radius: 20px;
-    padding: 22px; display: flex; flex-direction: column; text-decoration: none; color: var(--text);
-    transition: transform .25s ease, border-color .25s ease, box-shadow .25s ease;
+    --acc: #6d87ff; --mx: 50%; --my: 50%; --shx: 0px; --shy: 0px;
+    position: relative; border-radius: 22px; padding: 1px;
+    text-decoration: none; color: var(--text);
+    transform-style: preserve-3d; transition: transform .6s var(--ease), box-shadow .4s ease;
   }
-  .card:hover { transform: translateY(-6px); border-color: var(--acc, rgba(255,255,255,0.3));
-    box-shadow: 0 16px 40px -12px rgba(0,0,0,0.5); }
+  .card-inner {
+    position: relative; border-radius: 21px; height: 100%;
+    background: rgba(16,18,30,0.55); backdrop-filter: blur(16px);
+    border: 1px solid var(--border);
+    padding: 22px; display: flex; flex-direction: column; overflow: hidden;
+    transition: border-color .3s ease;
+  }
+  .card-inner::before {
+    content: ''; position: absolute; inset: 0; border-radius: 21px; opacity: 0; pointer-events: none;
+    background: radial-gradient(320px circle at var(--mx) var(--my), color-mix(in srgb, var(--acc) 28%, transparent), transparent 60%);
+    transition: opacity .3s ease;
+  }
+  .card:hover .card-inner::before { opacity: 1; }
+  .card:hover .card-inner { border-color: color-mix(in srgb, var(--acc) 55%, transparent); }
+  .card:hover {
+    box-shadow: var(--shx) var(--shy) 45px -14px rgba(0,0,0,0.6),
+                0 26px 60px -22px color-mix(in srgb, var(--acc) 42%, transparent),
+                0 0 0 1px color-mix(in srgb, var(--acc) 22%, transparent);
+  }
+  .card-inner::after {
+    content: ''; position: absolute; inset: -1px; border-radius: 22px; padding: 1px; opacity: 0;
+    background: conic-gradient(from calc(var(--mx) * 1deg), var(--acc), transparent 30%, transparent 70%, var(--acc));
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor; mask-composite: exclude; transition: opacity .3s ease; pointer-events: none;
+  }
+  .card:hover .card-inner::after { opacity: 0.5; }
+  .sheen {
+    position: absolute; inset: 0; pointer-events: none; opacity: 0; transition: opacity .35s ease;
+    background: linear-gradient(115deg, transparent 32%, rgba(255,255,255,.09) 48%, transparent 64%);
+  }
+  .card:hover .sheen { opacity: 1; }
 
   .preview {
-    height: 130px; border-radius: 12px; margin-bottom: 18px; position: relative; overflow: hidden;
-    border: 1px solid rgba(255,255,255,0.08);
+    height: 138px; border-radius: 14px; margin-bottom: 20px; position: relative; overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.08); transform: translateZ(20px);
+    transition: transform .5s var(--ease);
   }
-  .preview .bar { height: 20px; background: rgba(0,0,0,0.25); display: flex; align-items: center; gap: 5px; padding: 0 8px; }
-  .preview .bar span { width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,0.35); }
-  .preview .body { padding: 14px; }
-  .preview .ln { height: 8px; border-radius: 4px; margin-bottom: 8px; }
+  .card:hover .preview { transform: translateZ(34px) scale(1.02); }
 
-  .num {
-    width: 26px; height: 26px; border-radius: 50%; font-size: 12px; font-weight: 700;
-    display: flex; align-items: center; justify-content: center; margin-bottom: 14px;
-    background: var(--glass); border: 1px solid var(--border);
-  }
-  .card h3 { font-size: 19px; margin-bottom: 8px; }
-  .card p.desc { color: var(--muted); font-size: 14px; line-height: 1.55; margin-bottom: 16px; flex: 1; }
-  .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 20px; }
-  .tags span {
-    font-size: 11px; padding: 5px 10px; border-radius: 20px; border: 1px solid var(--border);
-    color: var(--muted);
-  }
+  .num { font-family: 'Space Grotesk', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 1px; color: var(--acc); margin-bottom: 8px; transform: translateZ(16px); }
+  .card h3 { font-size: 20px; margin-bottom: 10px; font-weight: 600; transform: translateZ(16px); }
+  .card p.desc { color: var(--muted); font-size: 13.5px; line-height: 1.6; margin-bottom: 18px; flex: 1; transform: translateZ(10px); }
+  .tags { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 22px; transform: translateZ(10px); }
+  .tags span { font-size: 11px; padding: 5px 11px; border-radius: 20px; border: 1px solid var(--border); color: var(--muted); background: rgba(255,255,255,0.02); }
   .cta {
-    display: inline-flex; align-items: center; justify-content: center; gap: 6px;
-    padding: 11px 0; border-radius: 30px; font-size: 14px; font-weight: 700;
-    background: var(--acc, #fff); color: var(--onacc, #08090f); transition: filter .2s;
+    display: inline-flex; align-items: center; justify-content: center; gap: 7px;
+    padding: 12px 0; border-radius: 30px; font-size: 13.5px; font-weight: 600;
+    border: 1px solid color-mix(in srgb, var(--acc) 45%, transparent); color: var(--text);
+    background: linear-gradient(180deg, color-mix(in srgb, var(--acc) 18%, transparent), transparent);
+    transform: translateZ(24px); transition: background .25s ease, border-color .25s ease;
   }
-  .card:hover .cta { filter: brightness(1.1); }
+  .card:hover .cta { background: linear-gradient(180deg, color-mix(in srgb, var(--acc) 35%, transparent), color-mix(in srgb, var(--acc) 8%, transparent)); border-color: var(--acc); }
+  .cta .arrow { display: inline-block; transition: transform .3s var(--ease); }
+  .card:hover .cta .arrow { transform: translateX(4px); }
 
-  /* per-card theme accents */
-  .c-aurora { --acc: linear-gradient(135deg,#6d87ff,#aebdff); --onacc:#0a0e1f; }
-  .c-aurora .preview { background: #090c18; }
-  .c-aurora .preview .ln:nth-child(1) { background: linear-gradient(90deg,#6d87ff,#aebdff); width: 55%; }
-  .c-aurora .preview .ln:nth-child(2) { background: rgba(255,255,255,0.15); width: 75%; }
-  .c-aurora .preview .ln:nth-child(3) { background: rgba(255,255,255,0.08); width: 40%; }
+  .c-aurora { --acc: #6d87ff; }
+  .c-bento  { --acc: #a97cf0; }
+  .c-kinetic{ --acc: #ff8c64; }
+  .c-terminal{ --acc: #33ff8a; }
 
-  .c-bento { --acc: linear-gradient(135deg,#7c5fe8,#b6a7f2); --onacc:#fff; }
-  .c-bento .preview { background: #0d0f16; display: grid; grid-template-columns: 1fr 1fr; gap: 6px; padding: 10px; }
-  .c-bento .preview .box { border-radius: 8px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.08); }
-  .c-bento .preview .box.a { background: linear-gradient(135deg,#7c5fe8,#b6a7f2); grid-row: span 2; }
+  /* ---- preview scenes: faithful mini-mockups of each real portfolio hero ---- */
+  .prev-aurora {
+    padding: 14px; display: flex; flex-direction: column; justify-content: center;
+    background: radial-gradient(ellipse at 25% 15%, rgba(109,135,255,.35), transparent 60%),
+                radial-gradient(ellipse at 85% 85%, rgba(169,124,240,.25), transparent 60%), #0a0e1f;
+  }
+  .prev-aurora .ar-avatar {
+    width: 24px; height: 24px; border-radius: 50%; border: 1px solid rgba(169,183,255,.6);
+    display: flex; align-items: center; justify-content: center; font-size: 8.5px; font-weight: 700;
+    color: #cdd6ff; box-shadow: 0 0 12px rgba(109,135,255,.5); margin-bottom: 10px;
+  }
+  .prev-aurora .ar-name { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+  .prev-aurora .ar-l1 { width: 34%; height: 9px; border-radius: 3px; background: rgba(255,255,255,.75); }
+  .prev-aurora .ar-l2 { width: 58%; height: 9px; border-radius: 3px; background: linear-gradient(90deg,#6d87ff,#cdd6ff,#a97cf0); }
+  .prev-aurora .ar-ctas { display: flex; gap: 6px; }
+  .prev-aurora .ar-btn { width: 46px; height: 14px; border-radius: 20px; background: linear-gradient(135deg,#6d87ff,#3b4a8c); }
+  .prev-aurora .ar-btn.o { background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.25); }
 
-  .c-kinetic { --acc: #e8505b; --onacc: #fff; }
-  .c-kinetic .preview { background: #f6f2ea; }
-  .c-kinetic .preview .ln { background: #16130f22; }
-  .c-kinetic .preview .ln:nth-child(1) { background: #e8505b; width: 45%; height: 10px; }
-  .c-kinetic .preview .ln:nth-child(2) { width: 80%; }
-  .c-kinetic .preview .ln:nth-child(3) { width: 60%; }
+  .prev-bento { background: #100f1c; display: grid; grid-template-columns: 1.3fr 1fr; grid-template-rows: 1fr 1fr; gap: 7px; padding: 11px; }
+  .prev-bento .bx { border-radius: 8px; border: 1px solid rgba(255,255,255,.08); background: rgba(255,255,255,.045); padding: 8px; display: flex; flex-direction: column; justify-content: center; gap: 5px; }
+  .prev-bento .bx.a { grid-row: span 2; align-items: flex-start; }
+  .prev-bento .bx-ln { display: block; height: 6px; border-radius: 3px; background: rgba(255,255,255,.18); width: 80%; }
+  .prev-bento .bx-ln.short { width: 55%; }
+  .prev-bento .bx-pill { display: block; margin-top: 4px; width: 38px; height: 9px; border-radius: 20px; background: linear-gradient(135deg,#a97cf0,#6d87ff); }
+  .prev-bento .bx.b { align-items: center; background: linear-gradient(135deg,#a97cf0,#6d87ff); }
+  .prev-bento .bx.b span { font-size: 10px; font-weight: 800; color: #fff; font-family: 'Space Grotesk',sans-serif; }
+  .prev-bento .bx.c { flex-direction: row; align-items: center; justify-content: space-around; }
+  .prev-bento .bx.c b { font-size: 13px; color: #d9c8ff; font-family: 'Space Grotesk',sans-serif; }
 
-  .c-terminal { --acc: #33ff66; --onacc: #07130a; }
-  .c-terminal .preview { background: #070a08; font-family: Consolas, monospace; }
-  .c-terminal .preview .ln { background: #1c8c38; }
-  .c-terminal .preview .ln:nth-child(1) { width: 50%; }
-  .c-terminal .preview .ln:nth-child(2) { background: #33ff66; width: 70%; }
-  .c-terminal .preview .ln:nth-child(3) { width: 35%; }
+  .prev-kinetic { background: #f3ede1; padding: 14px; display: flex; flex-direction: column; justify-content: center; gap: 6px; }
+  .prev-kinetic .kn-kicker { font-size: 8px; letter-spacing: 2px; color: #a08f78; text-transform: uppercase; }
+  .prev-kinetic .kn-name { font-family: Georgia, serif; font-weight: 700; font-size: 20px; line-height: 1.05; color: #1c1810; }
+  .prev-kinetic .kn-rot { font-size: 10px; color: #5b5346; }
+  .prev-kinetic .kn-rot b { color: #ff6b4a; font-weight: 700; border-bottom: 2px solid #ff6b4a; }
 
+  .prev-terminal { background: #04070a; font-family: 'Cascadia Code', Consolas, monospace; padding: 12px; position: relative; }
+  .prev-terminal .dots { display: flex; align-items: center; gap: 5px; margin-bottom: 9px; }
+  .prev-terminal .dots span { width: 7px; height: 7px; border-radius: 50%; }
+  .prev-terminal .dots span:nth-child(1){ background:#ff5f57; } .prev-terminal .dots span:nth-child(2){ background:#febc2e; } .prev-terminal .dots span:nth-child(3){ background:#28c840; }
+  .prev-terminal .dots em { margin-left: 6px; font-style: normal; font-size: 7.5px; color: #3a4a3d; }
+  .prev-terminal .ln { font-size: 10px; color: #1c8c38; margin-bottom: 5px; }
+  .prev-terminal .ln.hi { color: #33ff8a; }
+  .prev-terminal .cursor-blink { display: inline-block; width: 6px; height: 11px; background: #33ff8a; vertical-align: middle; animation: blink 1s step-end infinite; }
+  @keyframes blink { 50% { opacity: 0; } }
+  .prev-terminal .map { position: absolute; right: 10px; bottom: 10px; width: 44px; height: 44px; border-radius: 50%; opacity: .5; background-image: radial-gradient(circle, #33ff8a 1px, transparent 1px); background-size: 6px 6px; }
+
+  /* ================= FOOTER ================= */
   footer {
-    border-top: 1px solid var(--border); padding: 28px 0 40px;
+    border-top: 1px solid var(--border); padding: 34px 0 50px; margin-top: 30px;
     display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;
     color: var(--muted); font-size: 13px;
   }
-  footer .quote { text-align: center; flex: 1; font-style: italic; }
-  footer .social { display: flex; gap: 14px; }
-  footer .social a { color: var(--muted); text-decoration: none; }
-  footer .social a:hover { color: var(--text); }
+  footer .quote { text-align: center; flex: 1; font-style: italic; color: #b8bdd6; }
+  footer .quote small { display: block; margin-top: 4px; font-style: normal; color: var(--muted); }
+  footer .social { display: flex; gap: 10px; }
+  footer .social a { width: 34px; height: 34px; border-radius: 50%; border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; text-decoration: none; color: var(--muted); transition: all .2s ease; }
+  footer .social a:hover { color: #fff; border-color: rgba(169,183,255,0.5); box-shadow: 0 0 14px rgba(109,135,255,0.4); }
+  footer .social svg { width: 15px; height: 15px; }
 
   @media (max-width: 640px) {
-    header, footer { flex-direction: column; text-align: center; }
+    header { padding: 10px 0; }
+    .header-inner { padding: 9px 14px; }
+    footer { flex-direction: column; text-align: center; }
+    .hero { padding: 60px 0 10px; }
+    .cursor { display: none; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; }
   }
 </style>
 </head>
 <body>
-  <div class="wrap">
-    <header>
-      <div class="logo"><span class="mark">JD</span> JAY DHANGAR</div>
-      <a class="connect" href="mailto:dhangarjay447@gmail.com">Let's Connect →</a>
-    </header>
 
+  <div class="bg-fixed">
+    <div class="grain"></div>
+    <div class="blob b1"></div>
+    <div class="blob b2"></div>
+    <div class="blob b3"></div>
+    <div id="stars"></div>
+    <div class="orbit-ring r1"></div>
+    <div class="orbit-ring r2"></div>
+
+    <div class="pf-cube">
+      <div class="cube-wrap">
+        <div class="cube">
+          <div class="face front"><span>IDEAS<br>INTO<br>REALITY</span></div>
+          <div class="face back"></div>
+          <div class="face right"></div>
+          <div class="face left"></div>
+          <div class="face top"></div>
+          <div class="face bottom"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="pf-sphere">
+      <div class="sphere-wrap">
+        <div class="sphere-ring"></div>
+        <div class="sphere"></div>
+      </div>
+    </div>
+
+    <div class="shard s1"><svg viewBox="0 0 40 40"><polygon points="20,2 38,20 20,38 2,20" fill="rgba(169,124,240,0.18)" stroke="rgba(205,196,255,0.5)"/></svg></div>
+    <div class="shard s2"><svg viewBox="0 0 40 40"><polygon points="20,2 38,20 20,38 2,20" fill="rgba(109,135,255,0.18)" stroke="rgba(180,196,255,0.5)"/></svg></div>
+  </div>
+
+  <div class="ambient-glow" data-theme="aurora"></div>
+  <div class="ambient-glow" data-theme="bento"></div>
+  <div class="ambient-glow" data-theme="kinetic"></div>
+  <div class="ambient-glow" data-theme="terminal"></div>
+
+  <div class="cursor" id="cursor"><span class="cursor-label">VIEW</span></div>
+
+  <header>
+    <div class="header-inner wrap" id="headerInner" style="padding:9px 18px;">
+      <div class="brand"><span class="mark">JD</span> JAY DHANGAR</div>
+      <nav class="mainnav">
+        <a href="#top" class="active">Home</a>
+        <a href="#about">About</a>
+        <a href="#designs">Designs</a>
+        <a href="#contact">Contact</a>
+      </nav>
+      <a class="connect" href="mailto:dhangarjay447@gmail.com" data-magnetic><span class="dot"></span> Let's Connect →</a>
+    </div>
+  </header>
+
+  <div class="wrap" id="top">
     <section class="hero">
-      <div class="eyebrow">Same Portfolio · Four Experiences</div>
-      <h1>One Portfolio.<br><span class="grad">Multiple Styles.</span></h1>
-      <p class="sub">Explore my work through four different visual experiences — same story, different vibe. Pick the one that speaks to you.</p>
+      <div class="eyebrow-top reveal in">Same Portfolio · Four Experiences</div>
+      <h1 class="headline reveal in">One Portfolio.<br><span class="grad">Multiple Styles.</span></h1>
+      <p class="sub reveal in">Explore my work through four distinct visual experiences — same story, different vibe. Pick the one that speaks to you.</p>
+      <span class="signature reveal in">Jay Dhangar</span>
     </section>
 
+    <p id="about" class="sub reveal" style="max-width:720px;margin:56px auto 0;text-align:center;">
+      I'm an AI / Generative AI Engineer building intelligent applications, robust backend systems, and agentic
+      workflows. This hub links to four complete portfolio experiences — same content, four different worlds.
+    </p>
+
+    <div class="choose reveal" id="designs">
+      <span class="choose-line"></span>
+      <span class="choose-text">Choose Your Experience</span>
+      <span class="choose-line"></span>
+    </div>
+
     <div class="grid">
-      <a class="card c-aurora" href="portfolio-aurora.html">
-        <div class="preview"><div class="bar"><span></span><span></span><span></span></div>
-          <div class="body"><div class="ln"></div><div class="ln"></div><div class="ln"></div></div></div>
-        <div class="num">1</div>
-        <h3>Aurora Dark</h3>
-        <p class="desc">A moody, glassy dark theme with soft aurora gradients and smooth motion.</p>
-        <div class="tags"><span>Modern</span><span>Glassy</span><span>Animated</span></div>
-        <span class="cta">View Portfolio →</span>
+      <a class="card reveal c-aurora" data-theme="aurora" href="portfolios/portfolio-aurora.html">
+        <div class="card-inner">
+          <div class="sheen"></div>
+          <div class="preview prev-aurora">
+            <div class="ar-avatar">JD</div>
+            <div class="ar-name"><span class="ar-l1"></span><span class="ar-l2"></span></div>
+            <div class="ar-ctas"><span class="ar-btn"></span><span class="ar-btn o"></span></div>
+          </div>
+          <div class="num">01</div>
+          <h3>Aurora Dark</h3>
+          <p class="desc">A moody, glassy dark theme with soft aurora gradients and smooth motion.</p>
+          <div class="tags"><span>Modern</span><span>Glassy</span><span>Animated</span></div>
+          <span class="cta">View Portfolio <span class="arrow">→</span></span>
+        </div>
       </a>
 
-      <a class="card c-bento" href="portfolio-bento.html">
-        <div class="preview"><div class="box a"></div><div class="box"></div><div class="box"></div></div>
-        <div class="num">2</div>
-        <h3>Bento Grid</h3>
-        <p class="desc">A structured, card-based layout inspired by bento boxes, with light/dark toggle.</p>
-        <div class="tags"><span>Structured</span><span>Versatile</span><span>Clean</span></div>
-        <span class="cta">View Portfolio →</span>
+      <a class="card reveal c-bento" data-theme="bento" href="portfolios/portfolio-bento.html">
+        <div class="card-inner">
+          <div class="sheen"></div>
+          <div class="preview prev-bento">
+            <div class="bx a"><span class="bx-ln"></span><span class="bx-ln short"></span><span class="bx-pill"></span></div>
+            <div class="bx b"><span>JD</span></div>
+            <div class="bx c"><b>4</b><b>39</b></div>
+          </div>
+          <div class="num">02</div>
+          <h3>Bento Grid</h3>
+          <p class="desc">A structured, card-based layout inspired by bento boxes, with light/dark toggle.</p>
+          <div class="tags"><span>Structured</span><span>Versatile</span><span>Clean</span></div>
+          <span class="cta">View Portfolio <span class="arrow">→</span></span>
+        </div>
       </a>
 
-      <a class="card c-kinetic" href="portfolio-kinetic.html">
-        <div class="preview" style="padding:14px"><div class="ln" style="border-radius:4px;margin-bottom:8px"></div><div class="ln" style="height:8px;border-radius:4px;margin-bottom:8px"></div><div class="ln" style="height:8px;border-radius:4px"></div></div>
-        <div class="num">3</div>
-        <h3>Minimal Editorial</h3>
-        <p class="desc">A calm, paper-toned layout with serif typography and kinetic text reveals.</p>
-        <div class="tags"><span>Minimal</span><span>Elegant</span><span>Editorial</span></div>
-        <span class="cta">View Portfolio →</span>
+      <a class="card reveal c-kinetic" data-theme="kinetic" href="portfolios/portfolio-kinetic.html">
+        <div class="card-inner">
+          <div class="sheen"></div>
+          <div class="preview prev-kinetic">
+            <div class="kn-kicker">Portfolio · AI Engineer</div>
+            <div class="kn-name">JAY<br>DHANGAR</div>
+            <div class="kn-rot">I build <b>AI ENGINEER.</b></div>
+          </div>
+          <div class="num">03</div>
+          <h3>Minimal Editorial</h3>
+          <p class="desc">A calm, paper-toned layout with serif typography and kinetic text reveals.</p>
+          <div class="tags"><span>Minimal</span><span>Elegant</span><span>Editorial</span></div>
+          <span class="cta">View Portfolio <span class="arrow">→</span></span>
+        </div>
       </a>
 
-      <a class="card c-terminal" href="portfolio-terminal.html">
-        <div class="preview" style="padding:14px"><div class="ln" style="height:8px;border-radius:4px;margin-bottom:8px"></div><div class="ln" style="height:8px;border-radius:4px;margin-bottom:8px"></div><div class="ln" style="height:8px;border-radius:4px"></div></div>
-        <div class="num">4</div>
-        <h3>Terminal / Tech</h3>
-        <p class="desc">A developer-themed interface inspired by terminal UIs, with a retro CLI look.</p>
-        <div class="tags"><span>Developer</span><span>Retro</span><span>Unique</span></div>
-        <span class="cta">View Portfolio →</span>
+      <a class="card reveal c-terminal" data-theme="terminal" href="portfolios/portfolio-terminal.html">
+        <div class="card-inner">
+          <div class="sheen"></div>
+          <div class="preview prev-terminal">
+            <div class="dots"><span></span><span></span><span></span><em>jay@portfolio</em></div>
+            <div class="ln">$ whoami</div>
+            <div class="ln hi">&gt; JAY DHANGAR</div>
+            <div class="ln">📍 Bhopal · AI Engineer</div>
+            <div class="ln">$ <span class="cursor-blink"></span></div>
+            <div class="map"></div>
+          </div>
+          <div class="num">04</div>
+          <h3>Terminal / Tech</h3>
+          <p class="desc">A developer-themed interface inspired by terminal UIs, with a retro CLI look.</p>
+          <div class="tags"><span>Developer</span><span>Retro</span><span>Unique</span></div>
+          <span class="cta">View Portfolio <span class="arrow">→</span></span>
+        </div>
       </a>
     </div>
 
-    <footer>
+    <footer id="contact">
       <span>📍 Bhopal, India</span>
-      <span class="quote">"Same journey. Different perspectives." — Jay Dhangar</span>
+      <span class="quote">"Same Journey. Different Perspectives."<small>— Jay Dhangar</small></span>
       <div class="social">
-        <a href="https://github.com/JayDhangar" target="_blank">GitHub</a>
-        <a href="mailto:dhangarjay447@gmail.com">Email</a>
+        <a href="https://github.com/JayDhangar" target="_blank" aria-label="GitHub">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.73.5.5 5.73.5 12c0 5.1 3.29 9.4 7.86 10.93.57.1.78-.25.78-.55 0-.27-.01-1.17-.02-2.12-3.2.7-3.88-1.36-3.88-1.36-.52-1.34-1.28-1.7-1.28-1.7-1.04-.72.08-.7.08-.7 1.16.08 1.77 1.2 1.77 1.2 1.03 1.76 2.7 1.25 3.36.96.1-.75.4-1.25.73-1.54-2.55-.29-5.24-1.28-5.24-5.7 0-1.26.45-2.3 1.19-3.11-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.18 1.19a11 11 0 0 1 5.79 0c2.2-1.5 3.17-1.19 3.17-1.19.64 1.6.24 2.76.12 3.05.74.81 1.19 1.85 1.19 3.11 0 4.43-2.7 5.4-5.27 5.69.41.36.78 1.08.78 2.18 0 1.57-.01 2.83-.01 3.22 0 .31.2.66.79.55A10.52 10.52 0 0 0 23.5 12C23.5 5.73 18.27.5 12 .5Z"/></svg>
+        </a>
+        <a href="mailto:dhangarjay447@gmail.com" aria-label="Email">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2.5" y="4.5" width="19" height="15" rx="2.5"/><path d="m3 6 9 7 9-7"/></svg>
+        </a>
       </div>
     </footer>
   </div>
+
+<script>
+(function() {
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var fineHover = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+
+  /* starfield */
+  var starsEl = document.getElementById('stars');
+  var starHTML = '';
+  for (var i = 0; i < 70; i++) {
+    var top = Math.random() * 100, left = Math.random() * 100;
+    var delay = (Math.random() * 4).toFixed(2), dur = (3 + Math.random() * 3).toFixed(2);
+    var size = (Math.random() * 1.6 + 1).toFixed(1);
+    starHTML += '<span class="star" style="top:' + top + '%;left:' + left + '%;width:' + size + 'px;height:' + size + 'px;animation-duration:' + dur + 's;animation-delay:' + delay + 's;"></span>';
+  }
+  starsEl.innerHTML = starHTML;
+
+  /* scroll reveal */
+  var revealEls = document.querySelectorAll('.reveal');
+  if ('IntersectionObserver' in window && !reduceMotion) {
+    var io = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry, i) {
+        if (entry.isIntersecting) {
+          var el = entry.target;
+          setTimeout(function() { el.classList.add('in'); }, i * 70);
+          io.unobserve(el);
+        }
+      });
+    }, { threshold: 0.15 });
+    revealEls.forEach(function(el) { io.observe(el); });
+  } else {
+    revealEls.forEach(function(el) { el.classList.add('in'); });
+  }
+
+  /* header compact-on-scroll + hero parallax */
+  var headerInner = document.getElementById('headerInner');
+  var pfCube = document.querySelector('.pf-cube');
+  var pfSphere = document.querySelector('.pf-sphere');
+  var scrollTicking = false;
+  function onScroll() {
+    var y = window.scrollY;
+    headerInner.classList.toggle('scrolled', y > 16);
+    if (!reduceMotion) {
+      if (pfCube) pfCube.style.transform = 'translateY(' + (y * 0.12) + 'px)';
+      if (pfSphere) pfSphere.style.transform = 'translateY(' + (y * -0.08) + 'px)';
+    }
+    scrollTicking = false;
+  }
+  window.addEventListener('scroll', function() {
+    if (!scrollTicking) { requestAnimationFrame(onScroll); scrollTicking = true; }
+  }, { passive: true });
+
+  /* ambient lighting synced to hovered card */
+  var ambientMap = {};
+  document.querySelectorAll('.ambient-glow').forEach(function(el) { ambientMap[el.dataset.theme] = el; });
+  var ambientTimer = null;
+  function setAmbient(theme) {
+    clearTimeout(ambientTimer);
+    Object.keys(ambientMap).forEach(function(k) { ambientMap[k].classList.toggle('active', k === theme); });
+  }
+  function clearAmbient() {
+    ambientTimer = setTimeout(function() {
+      Object.keys(ambientMap).forEach(function(k) { ambientMap[k].classList.remove('active'); });
+    }, 150);
+  }
+
+  /* custom cursor */
+  var cursorEl = document.getElementById('cursor');
+  if (fineHover && !reduceMotion) {
+    document.body.classList.add('has-cursor');
+    var tx = innerWidth / 2, ty = innerHeight / 2, cx = tx, cy = ty;
+    window.addEventListener('mousemove', function(e) { tx = e.clientX; ty = e.clientY; });
+    (function raf() {
+      cx += (tx - cx) * 0.22; cy += (ty - cy) * 0.22;
+      cursorEl.style.left = cx + 'px'; cursorEl.style.top = cy + 'px';
+      requestAnimationFrame(raf);
+    })();
+  } else {
+    cursorEl.style.display = 'none';
+  }
+
+  /* magnetic buttons */
+  function magnetic(el, strength) {
+    if (!fineHover || reduceMotion) return;
+    el.addEventListener('mousemove', function(e) {
+      var r = el.getBoundingClientRect();
+      var mx = e.clientX - r.left - r.width / 2;
+      var my = e.clientY - r.top - r.height / 2;
+      el.style.transform = 'translate(' + (mx * strength) + 'px,' + (my * strength) + 'px)';
+    });
+    el.addEventListener('mouseleave', function() { el.style.transform = ''; });
+  }
+  document.querySelectorAll('[data-magnetic]').forEach(function(el) { magnetic(el, 0.25); });
+
+  /* card 3D tilt, cursor glow, preview parallax, dynamic shadow */
+  document.querySelectorAll('.card').forEach(function(card) {
+    var preview = card.querySelector('.preview');
+    var cta = card.querySelector('.cta');
+    var theme = card.dataset.theme;
+
+    card.addEventListener('mouseenter', function() {
+      setAmbient(theme);
+      if (cursorEl) cursorEl.classList.add('hover-card');
+      if (fineHover && !reduceMotion) card.style.transition = 'box-shadow .4s ease';
+    });
+
+    if (fineHover && !reduceMotion) {
+      var raf = null;
+      card.addEventListener('mousemove', function(e) {
+        if (raf) cancelAnimationFrame(raf);
+        raf = requestAnimationFrame(function() {
+          var rect = card.getBoundingClientRect();
+          var x = e.clientX - rect.left, y = e.clientY - rect.top;
+          var px = x / rect.width, py = y / rect.height;
+          var rotY = (px - 0.5) * 12, rotX = (0.5 - py) * 12; // max ~6deg
+          card.style.transform = 'rotateX(' + rotX + 'deg) rotateY(' + rotY + 'deg) translateY(-4px)';
+          card.style.setProperty('--mx', (px * 100) + '%');
+          card.style.setProperty('--my', (py * 100) + '%');
+          card.style.setProperty('--shx', (-rotY * 2) + 'px');
+          card.style.setProperty('--shy', (rotX * -2 + 14) + 'px');
+          if (preview) preview.style.transform = 'translateZ(34px) scale(1.02) translate(' + ((px - 0.5) * -8) + 'px,' + ((py - 0.5) * -8) + 'px)';
+          if (cta) cta.style.transform = 'translateZ(24px) translate(' + ((px - 0.5) * 4) + 'px,' + ((py - 0.5) * 4) + 'px)';
+        });
+      });
+    }
+
+    card.addEventListener('mouseleave', function() {
+      clearAmbient();
+      if (cursorEl) cursorEl.classList.remove('hover-card');
+      card.style.transition = '';
+      card.style.transform = '';
+      if (preview) preview.style.transform = '';
+      if (cta) cta.style.transform = '';
+    });
+  });
+})();
+</script>
 </body>
 </html>
