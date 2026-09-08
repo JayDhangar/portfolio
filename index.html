@@ -28,6 +28,7 @@
   h1, h2, h3, .brand { font-family: 'Space Grotesk', system-ui, sans-serif; }
   a { color: inherit; }
   .wrap { max-width: 1240px; margin: 0 auto; padding: 0 32px; position: relative; z-index: 2; }
+  #top, #about, #designs, #contact { scroll-margin-top: 105px; }
 
   /* ================= BACKGROUND LAYERS ================= */
   .bg-fixed { position: fixed; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; }
@@ -123,7 +124,7 @@
   .ambient-glow[data-theme="bento"]    { background: radial-gradient(circle at 75% 20%, rgba(169,124,240,0.4), transparent 62%); }
   .ambient-glow[data-theme="kinetic"]  { background: radial-gradient(circle at 50% 25%, rgba(255,140,100,0.32), transparent 62%); }
   .ambient-glow[data-theme="terminal"] { background: radial-gradient(circle at 50% 75%, rgba(51,255,138,0.3), transparent 62%); }
-  .ambient-glow.active { opacity: 1; }
+  .ambient-glow.active { opacity: 0.55; }
 
   /* ================= HEADER ================= */
   header { position: sticky; top: 0; z-index: 20; padding: 14px 0; }
@@ -385,7 +386,7 @@
   <div class="ambient-glow" data-theme="terminal"></div>
 
   <header>
-    <div class="header-inner wrap" id="headerInner" style="padding:9px 18px;">
+    <div class="header-inner wrap" id="headerInner">
       <div class="brand"><span class="mark">JD</span> JAY DHANGAR</div>
       <nav class="mainnav">
         <a href="#top" class="active">Home</a>
@@ -596,7 +597,7 @@
           var rect = card.getBoundingClientRect();
           var x = e.clientX - rect.left, y = e.clientY - rect.top;
           var px = x / rect.width, py = y / rect.height;
-          var rotY = (px - 0.5) * 8, rotX = (0.5 - py) * 6; // max ~4deg / ~3deg
+          var rotY = (px - 0.5) * 6, rotX = (0.5 - py) * 4; // max ~3deg / ~2deg
           card.style.transform = 'rotateX(' + rotX + 'deg) rotateY(' + rotY + 'deg) translateY(-8px)';
           card.style.setProperty('--mx', (px * 100) + '%');
           card.style.setProperty('--my', (py * 100) + '%');
