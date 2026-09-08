@@ -125,19 +125,6 @@
   .ambient-glow[data-theme="terminal"] { background: radial-gradient(circle at 50% 75%, rgba(51,255,138,0.3), transparent 62%); }
   .ambient-glow.active { opacity: 1; }
 
-  /* custom cursor */
-  .cursor {
-    position: fixed; top: 0; left: 0; width: 9px; height: 9px; border-radius: 50%;
-    background: #cdd6ff; box-shadow: 0 0 12px 3px rgba(205,214,255,.55);
-    pointer-events: none; z-index: 999; transform: translate(-50%,-50%);
-    display: flex; align-items: center; justify-content: center;
-    transition: width .3s var(--ease), height .3s var(--ease), background .3s ease, box-shadow .3s ease;
-  }
-  .cursor .cursor-label { opacity: 0; font-size: 9px; letter-spacing: 1.5px; font-weight: 700; color: #05060c; transition: opacity .2s ease; white-space: nowrap; }
-  .cursor.hover-card { width: 58px; height: 58px; background: rgba(238,240,251,0.92); box-shadow: 0 0 24px rgba(205,214,255,.35); }
-  .cursor.hover-card .cursor-label { opacity: 1; }
-  body.has-cursor, body.has-cursor a, body.has-cursor .card { cursor: none; }
-
   /* ================= HEADER ================= */
   header { position: sticky; top: 0; z-index: 20; padding: 14px 0; }
   .header-inner {
@@ -209,11 +196,13 @@
   /* ================= CARDS ================= */
   .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(255px, 1fr)); gap: 26px; padding: 44px 0 30px; perspective: 1400px; }
   .card {
-    --acc: #6d87ff; --mx: 50%; --my: 50%; --shx: 0px; --shy: 0px;
+    --acc: #6d87ff; --mx: 50%; --my: 50%; --shx: 0px; --shy: 14px;
     position: relative; border-radius: 22px; padding: 1px;
     text-decoration: none; color: var(--text);
-    transform-style: preserve-3d; transition: transform .6s var(--ease), box-shadow .4s ease;
+    transform-style: preserve-3d; transition: transform .6s var(--ease), box-shadow .5s ease;
   }
+  /* CSS-only fallback lift for touch/coarse-pointer devices (no JS tilt) */
+  .card:hover { transform: translateY(-8px); }
   .card-inner {
     position: relative; border-radius: 21px; height: 100%;
     background: rgba(16,18,30,0.55); backdrop-filter: blur(16px);
@@ -253,8 +242,14 @@
   }
   .card:hover .preview { transform: translateZ(34px) scale(1.02); }
 
-  .num { font-family: 'Space Grotesk', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 1px; color: var(--acc); margin-bottom: 8px; transform: translateZ(16px); }
-  .card h3 { font-size: 20px; margin-bottom: 10px; font-weight: 600; transform: translateZ(16px); }
+  .num {
+    font-family: 'Space Grotesk', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 1px;
+    color: var(--acc); margin-bottom: 8px; transform: translateZ(16px);
+    transition: filter .35s ease, text-shadow .35s ease;
+  }
+  .card:hover .num { filter: brightness(1.35); text-shadow: 0 0 14px color-mix(in srgb, var(--acc) 60%, transparent); }
+  .card h3 { font-size: 20px; margin-bottom: 10px; font-weight: 600; transform: translateZ(16px); transition: transform .4s var(--ease); }
+  .card:hover h3 { transform: translateZ(16px) translateY(-2px); }
   .card p.desc { color: var(--muted); font-size: 13.5px; line-height: 1.6; margin-bottom: 18px; flex: 1; transform: translateZ(10px); }
   .tags { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 22px; transform: translateZ(10px); }
   .tags span { font-size: 11px; padding: 5px 11px; border-radius: 20px; border: 1px solid var(--border); color: var(--muted); background: rgba(255,255,255,0.02); }
@@ -263,11 +258,15 @@
     padding: 12px 0; border-radius: 30px; font-size: 13.5px; font-weight: 600;
     border: 1px solid color-mix(in srgb, var(--acc) 45%, transparent); color: var(--text);
     background: linear-gradient(180deg, color-mix(in srgb, var(--acc) 18%, transparent), transparent);
-    transform: translateZ(24px); transition: background .25s ease, border-color .25s ease;
+    transform: translateZ(24px); transition: background .25s ease, border-color .25s ease, transform .3s var(--ease), box-shadow .3s ease;
   }
-  .card:hover .cta { background: linear-gradient(180deg, color-mix(in srgb, var(--acc) 35%, transparent), color-mix(in srgb, var(--acc) 8%, transparent)); border-color: var(--acc); }
+  .card:hover .cta {
+    background: linear-gradient(180deg, color-mix(in srgb, var(--acc) 35%, transparent), color-mix(in srgb, var(--acc) 8%, transparent));
+    border-color: var(--acc); transform: translateZ(24px) scale(1.02);
+    box-shadow: 0 0 22px -6px color-mix(in srgb, var(--acc) 55%, transparent);
+  }
   .cta .arrow { display: inline-block; transition: transform .3s var(--ease); }
-  .card:hover .cta .arrow { transform: translateX(4px); }
+  .card:hover .cta .arrow { transform: translateX(5px); }
 
   .c-aurora { --acc: #6d87ff; }
   .c-bento  { --acc: #a97cf0; }
@@ -338,7 +337,6 @@
     .header-inner { padding: 9px 14px; }
     footer { flex-direction: column; text-align: center; }
     .hero { padding: 60px 0 10px; }
-    .cursor { display: none; }
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -385,8 +383,6 @@
   <div class="ambient-glow" data-theme="bento"></div>
   <div class="ambient-glow" data-theme="kinetic"></div>
   <div class="ambient-glow" data-theme="terminal"></div>
-
-  <div class="cursor" id="cursor"><span class="cursor-label">VIEW</span></div>
 
   <header>
     <div class="header-inner wrap" id="headerInner" style="padding:9px 18px;">
@@ -568,21 +564,6 @@
     }, 150);
   }
 
-  /* custom cursor */
-  var cursorEl = document.getElementById('cursor');
-  if (fineHover && !reduceMotion) {
-    document.body.classList.add('has-cursor');
-    var tx = innerWidth / 2, ty = innerHeight / 2, cx = tx, cy = ty;
-    window.addEventListener('mousemove', function(e) { tx = e.clientX; ty = e.clientY; });
-    (function raf() {
-      cx += (tx - cx) * 0.22; cy += (ty - cy) * 0.22;
-      cursorEl.style.left = cx + 'px'; cursorEl.style.top = cy + 'px';
-      requestAnimationFrame(raf);
-    })();
-  } else {
-    cursorEl.style.display = 'none';
-  }
-
   /* magnetic buttons */
   function magnetic(el, strength) {
     if (!fineHover || reduceMotion) return;
@@ -604,8 +585,7 @@
 
     card.addEventListener('mouseenter', function() {
       setAmbient(theme);
-      if (cursorEl) cursorEl.classList.add('hover-card');
-      if (fineHover && !reduceMotion) card.style.transition = 'box-shadow .4s ease';
+      if (fineHover && !reduceMotion) card.style.transition = 'box-shadow .5s ease';
     });
 
     if (fineHover && !reduceMotion) {
@@ -616,21 +596,20 @@
           var rect = card.getBoundingClientRect();
           var x = e.clientX - rect.left, y = e.clientY - rect.top;
           var px = x / rect.width, py = y / rect.height;
-          var rotY = (px - 0.5) * 12, rotX = (0.5 - py) * 12; // max ~6deg
-          card.style.transform = 'rotateX(' + rotX + 'deg) rotateY(' + rotY + 'deg) translateY(-4px)';
+          var rotY = (px - 0.5) * 8, rotX = (0.5 - py) * 6; // max ~4deg / ~3deg
+          card.style.transform = 'rotateX(' + rotX + 'deg) rotateY(' + rotY + 'deg) translateY(-8px)';
           card.style.setProperty('--mx', (px * 100) + '%');
           card.style.setProperty('--my', (py * 100) + '%');
           card.style.setProperty('--shx', (-rotY * 2) + 'px');
-          card.style.setProperty('--shy', (rotX * -2 + 14) + 'px');
+          card.style.setProperty('--shy', (rotX * -2 + 16) + 'px');
           if (preview) preview.style.transform = 'translateZ(34px) scale(1.02) translate(' + ((px - 0.5) * -8) + 'px,' + ((py - 0.5) * -8) + 'px)';
-          if (cta) cta.style.transform = 'translateZ(24px) translate(' + ((px - 0.5) * 4) + 'px,' + ((py - 0.5) * 4) + 'px)';
+          if (cta) cta.style.transform = 'translateZ(24px) scale(1.02) translate(' + ((px - 0.5) * 4) + 'px,' + ((py - 0.5) * 4) + 'px)';
         });
       });
     }
 
     card.addEventListener('mouseleave', function() {
       clearAmbient();
-      if (cursorEl) cursorEl.classList.remove('hover-card');
       card.style.transition = '';
       card.style.transform = '';
       if (preview) preview.style.transform = '';
