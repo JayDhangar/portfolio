@@ -10,6 +10,7 @@ data/portfolio.json          ALL content (single source of truth)
 src/index.template.html      page shell with <!-- @slot --> markers, no content
 build.js                     JSON + template -> index.html (static, crawlable)
 index.html                   GENERATED. Do not edit by hand.
+public/                      GENERATED deploy output (git-ignored): what Vercel serves
 assets/render.js             shared HTML renderer (used by build.js and the browser)
 assets/rag.js                chunking + BM25 retrieval (used by the browser and the API)
 assets/app.js                interactions: Ask Jay.OS, console, inspector, lab filters, tabs

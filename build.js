@@ -46,5 +46,17 @@ const html = template.replace(/<!--\s*@(\w+)\s*-->/g, (_, key) => {
 const unused = Object.keys(slots).filter((k) => !used.has(k));
 if (unused.length) throw new Error(`Template is missing slots: ${unused.join(', ')}`);
 
+// Root index.html: for local preview (scripts/dev.js, python -m http.server) and GitHub.
 fs.writeFileSync(path.join(ROOT, 'index.html'), html);
+
+// public/: exactly what Vercel serves (vercel.json "outputDirectory"). Only the site's files, so build
+// scripts, templates, and docs are not published. The api/ function is deployed separately by Vercel.
+const OUT = path.join(ROOT, 'public');
+fs.rmSync(OUT, { recursive: true, force: true });
+fs.mkdirSync(path.join(OUT, 'data'), { recursive: true });
+fs.writeFileSync(path.join(OUT, 'index.html'), html);
+fs.cpSync(path.join(ROOT, 'assets'), path.join(OUT, 'assets'), { recursive: true });
+fs.copyFileSync(path.join(ROOT, 'data/portfolio.json'), path.join(OUT, 'data/portfolio.json'));
+
 console.log(`index.html built: ${(html.length / 1024).toFixed(1)} KB, ${ctx.passages} RAG passages, site URL: ${siteUrl || '(not set, og:url and canonical omitted)'}`);
+console.log('public/ ready for deploy: index.html, assets/, data/portfolio.json');
