@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#09090b">
+<!-- @head -->
+<script>document.documentElement.classList.add('js');</script>
+<link rel="preload" href="assets/fonts/Geist-Variable.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/fonts/GeistMono-Variable.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <div class="bg-grid" aria-hidden="true"></div>
+  <div class="bg-glow" aria-hidden="true"></div>
+
+  <aside class="sidebar">
+    <a class="brand" href="#overview">
+      <span class="brand-mark" aria-hidden="true">J</span>
+      <span class="brand-name">JAY<span>.OS</span></span>
+    </a>
+    <div class="brand-role mono">AI Engineer</div>
+
+    <nav class="nav" id="nav" aria-label="Sections">
+      <a href="#overview" data-sec="overview"><span class="n">00</span>Overview</a>
+      <a href="#systems" data-sec="systems"><span class="n">01</span>Systems</a>
+      <a href="#lab" data-sec="lab"><span class="n">02</span>AI Lab</a>
+      <a href="#engineering" data-sec="engineering"><span class="n">03</span>Engineering</a>
+      <a href="#experience" data-sec="experience"><span class="n">04</span>Experience</a>
+      <a href="#thinking" data-sec="thinking"><span class="n">05</span>Thinking</a>
+      <a href="#contact" data-sec="contact"><span class="n">06</span>Contact</a>
+    </nav>
+
+    <button class="side-ask" type="button" data-ask aria-label="Ask Jay.OS">
+      <span class="spark" aria-hidden="true"></span><span class="side-ask-label">Ask Jay.OS</span><kbd class="kbd-hint">Ctrl K</kbd>
+    </button>
+
+    <div class="side-status">
+      <span class="status mono" data-status data-state="checking"><span class="status-dot" aria-hidden="true"></span><span data-status-text>Checking assistant</span></span>
+      <span class="index-line mono">RAG index: <span data-index-count><!-- @passages --></span> passages</span>
+    </div>
+  </aside>
+
+  <main class="main" id="main" tabindex="-1">
+    <header class="topbar">
+      <div class="crumb mono">jay.os <span class="dim">/</span> <span id="crumb">overview</span></div>
+      <button class="top-ask" type="button" data-ask>Ask Jay.OS</button>
+    </header>
+
+<!-- @hero -->
+
+<!-- @systems -->
+
+<!-- @lab -->
+
+<!-- @engineering -->
+
+<!-- @experience -->
+
+<!-- @thinking -->
+
+<!-- @contact -->
+
+<!-- @footer -->
+  </main>
+
+  <div class="ask-overlay console-overlay" id="console" hidden>
+    <div class="console-panel" role="dialog" aria-modal="true" aria-labelledby="console-title">
+      <div class="ask-head">
+        <span class="mono">jay.os <span class="dim">/</span> systems <span class="dim">/</span> <span id="console-crumb"></span></span>
+        <button class="ask-close mono" type="button" data-close aria-label="Close system console">esc</button>
+      </div>
+      <div class="console-body" id="console-body"></div>
+    </div>
+  </div>
+
+  <div class="ask-overlay" id="ask" hidden>
+    <div class="ask-panel" role="dialog" aria-modal="true" aria-labelledby="ask-title">
+      <div class="ask-head">
+        <span class="mono" id="ask-title">jay.os <span class="dim">/</span> ask</span>
+        <span class="ask-mode mono" id="ask-mode">Ready</span>
+        <button class="ask-close mono" type="button" data-close aria-label="Close Ask Jay.OS">esc</button>
+      </div>
+      <div class="ask-log" id="ask-log">
+        <div class="ask-intro">
+          <p><!-- @askIntro --></p>
+          <div class="chips"><!-- @askChips --></div>
+        </div>
+      </div>
+      <form class="ask-form" id="ask-form" autocomplete="off">
+        <span class="prompt mono" aria-hidden="true">&gt;</span>
+        <input id="ask-input" name="q" maxlength="300" placeholder="Ask about Jay's systems, RAG work, or failures" aria-label="Ask a question">
+        <button type="submit" class="mono">Run</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Announces only the finished Ask Jay.OS answer; the live pipeline rows are deliberately not a live region. -->
+  <div class="sr-only" id="ask-announcer" role="status" aria-live="polite" aria-atomic="true"></div>
+
+  <script src="assets/rag.js"></script>
+  <script src="assets/render.js"></script>
+  <script src="assets/app.js"></script>
+</body>
+</html>

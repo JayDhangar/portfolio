@@ -1,0 +1,1554 @@
+{
+  "profile": {
+    "name": "Jay Dhangar",
+    "handle": "JAY.OS",
+    "role": "AI Engineer",
+    "headline": "I engineer AI systems for production.",
+    "sub": "LLM applications end to end: orchestration, retrieval, guardrails, evaluation, and the backend that runs them.",
+    "focus": "Agentic AI & Automation",
+    "capabilities": [
+      "LLM orchestration",
+      "RAG",
+      "AI Agents",
+      "Guardrails",
+      "Evals",
+      "Vision",
+      "Voice"
+    ],
+    "summary": "Software Engineer specializing in Agentic AI and Automation, with hands-on experience building autonomous and multi-agent systems using LangChain, LangGraph, CrewAI, and Agno. Strong background in workflow automation, API integrations, and multimodal AI including OCR, image generation, video creation, and TTS.",
+    "location": "Bhopal, India",
+    "current": "AI Trainee @ SoluLab",
+    "available": true
+  },
+  "stats": [
+    {
+      "value": "100K+",
+      "label": "users on a Bible Player backend I designed",
+      "system": "christianai"
+    },
+    {
+      "value": "2",
+      "label": "production AI platforms engineered"
+    },
+    {
+      "value": "3",
+      "label": "AI modalities in production: text, vision, voice"
+    },
+    {
+      "value": "62",
+      "label": "backend tests in CI on ResuMate AI",
+      "system": "resumate"
+    }
+  ],
+  "systems": [
+    {
+      "id": "christianai",
+      "name": "ChristianAI",
+      "status": "production",
+      "role": "AI & Backend Engineer",
+      "summary": "A dual-path AI assistant that handles both Christian-specific and general ChatGPT-style conversations, with web-grounded answers, image generation, and narrated scripture.",
+      "problem": "Build one assistant that safely serves two very different intents (faith questions and everyday requests), answers with current web-grounded information, supports scripture narration and AI-generated posters, and keeps model costs aligned with what users actually consume.",
+      "highlights": [
+        "Architected a dual-path AI assistant supporting Christian-specific and general conversations using OpenAI APIs with intent classification and safety guardrails.",
+        "Integrated the OpenAI Responses API with live web search to provide current, web-grounded answers with citations.",
+        "Implemented an LLM-based query-classification fallback to improve intent detection for misspellings and ambiguous queries.",
+        "Built AI image-generation and vision workflows with GPT-4o / GPT-4o-mini, including poster generation and intelligent person placement.",
+        "Developed a face-compositing pipeline that integrates user-uploaded photos into AI-generated poster designs.",
+        "Built AI Bible narration infrastructure using TTS and Whisper, generating synchronized audio.",
+        "Designed and implemented the complete Bible Player backend, serving over 100,000 users.",
+        "Re-engineered billing from chapter-based charging to real listening-time usage metering.",
+        "Built automated narration caching jobs, improving first-play performance and reducing wait times.",
+        "Recalibrated the credit/pricing infrastructure based on actual OpenAI usage costs.",
+        "Designed a 90-day no-repeat devotional system with timezone-aware daily verse selection.",
+        "Implemented a 30-day quiz-streak reward system to improve retention.",
+        "Implemented semantic AI-generated conversation titles.",
+        "Developed a scripture-translation quality system for consistent multilingual poster generation."
+      ],
+      "stack": [
+        "Python",
+        "FastAPI",
+        "PostgreSQL",
+        "OpenAI API",
+        "GPT-4o",
+        "Responses API",
+        "Web Search",
+        "Whisper",
+        "TTS",
+        "S3",
+        "Docker",
+        "pytest",
+        "CI/CD"
+      ],
+      "decisions": [
+        {
+          "title": "Classify intent before generating",
+          "why": "Two assistant behaviors share one entry point. Routing first gives each path its own prompts and guardrails instead of one prompt trying to do both."
+        },
+        {
+          "title": "LLM classification as a fallback, not the default",
+          "why": "Clear queries take the primary path; the extra model call is reserved for misspelled or ambiguous input, where it adds the most."
+        },
+        {
+          "title": "Web search through the Responses API, with citations",
+          "why": "Current information changes after training; citations let users check the answer themselves."
+        },
+        {
+          "title": "Pre-generate narration",
+          "why": "Caching jobs move TTS generation off the user's first play."
+        },
+        {
+          "title": "Meter what users consume",
+          "why": "Billing moved from chapters to listening time, and credit pricing was recalibrated from actual OpenAI spend."
+        }
+      ],
+      "failures": [
+        "intent-routing",
+        "narration-latency",
+        "billing-alignment"
+      ],
+      "result": "In production with a Bible Player backend used by over 100,000 users, web-grounded chat with citations, narrated scripture, and personalized poster generation.",
+      "links": {},
+      "architecture": "christianai"
+    },
+    {
+      "id": "mendle",
+      "name": "Mendle",
+      "status": "production",
+      "role": "AI & Backend Engineer",
+      "summary": "A mental-wellness and mentorship platform with a resilient LLM orchestration layer, quality-validated responses, and privacy-preserving multi-party AI mediation.",
+      "problem": "Sensitive wellness and mentorship conversations need an LLM layer that stays up under provider rate limits, stays relevant over long conversations, grounds itself in current information without opening an injection hole, and protects participant privacy in multi-party sessions.",
+      "highlights": [
+        "Built the core LLM orchestration layer using Groq and LangChain, with retry/backoff and differentiated per-minute vs. daily token-limit handling.",
+        "Implemented embedding-based response-quality validation using cosine-similarity relevance scoring, repetition checks, and length validation.",
+        "Integrated real-time web-search grounding via Serper / Google Search API with prompt-injection defenses.",
+        "Designed a privacy-preserving multi-party AI mediation engine that controls participant anonymity in sensitive conversations.",
+        "Developed recency-aware context management, improving conversation coherence and relevance.",
+        "Built an Emotional Memory Object pipeline that generates insights from conversations.",
+        "Implemented AI oversight tracking model latency and user interaction metrics."
+      ],
+      "stack": [
+        "Python",
+        "FastAPI",
+        "Groq",
+        "LangChain",
+        "GPT-4o",
+        "Whisper",
+        "DALL·E 3",
+        "Google Veo",
+        "Serper",
+        "PaddleOCR",
+        "Embeddings",
+        "LLM-as-a-judge",
+        "PostgreSQL",
+        "Docker",
+        "AWS",
+        "GitHub Actions",
+        "Locust"
+      ],
+      "decisions": [
+        {
+          "title": "Separate per-minute from daily token limits",
+          "why": "A per-minute limit clears within seconds and is worth retrying; a daily limit won't, so retrying it only adds latency and load."
+        },
+        {
+          "title": "Validate every response before delivery",
+          "why": "Relevance, repetition, and length are measurable, so they are checked with embeddings and rules instead of assumed."
+        },
+        {
+          "title": "Treat search results as untrusted input",
+          "why": "Web content can carry instructions aimed at the model. Grounding without injection defenses turns retrieval into an attack surface."
+        },
+        {
+          "title": "Weight context by recency",
+          "why": "Recent turns carry the most signal for coherence in long conversations."
+        },
+        {
+          "title": "Enforce anonymity in the mediation engine",
+          "why": "In multi-party conversations, privacy is controlled by the system rather than left to model behavior."
+        }
+      ],
+      "failures": [
+        "rate-limits",
+        "response-quality",
+        "search-injection"
+      ],
+      "result": "A production orchestration layer on Groq and LangChain with fault-tolerant generation, embedding-validated responses, injection-aware search grounding, and latency and interaction monitoring.",
+      "links": {},
+      "architecture": "mendle"
+    },
+    {
+      "id": "resumate",
+      "name": "ResuMate AI + JobHunt AI",
+      "status": "open-source",
+      "role": "Personal project, open source",
+      "summary": "Two AI products on one FastAPI backend: a multi-agent resume builder, and a job-search aggregator with scam scoring, RAG resume matching, and AI-drafted applications.",
+      "problem": "Build and tailor a resume, find real jobs across many boards, spot scam postings, and apply, all in one app that keeps working when no paid AI keys are configured.",
+      "highlights": [
+        "Designed a multi-agent backend: eight specialized agents (resume reading with OCR, template search and parsing, uploaded templates, natural-language editing, generation, export, job search) under a coordinator that owns version and prompt history.",
+        "Built RAG job matching: the resume and live postings are embedded with OpenAI text-embedding-3-small and re-ranked by cosine similarity blended with skill overlap, with a pure-Python TF-IDF fallback offline.",
+        "Built JobHunt's parallel fan-out across job boards with cross-board dedupe, whole-word relevance matching, and a 0-100 genuineness score with visible reasons (apply domain, HTTPS, scam wording, salary plausibility, posting age).",
+        "Added an anti-data-loss guard to LLM-powered natural-language resume edits, with a rule-based offline fallback.",
+        "Made job alerts quota-aware: a ~20h persistent cache for identical searches and a monthly API budget that hard-stops before the free tier runs out.",
+        "Offline export to PDF, DOCX, HTML, PNG, Markdown, and JSON in pure Python; pluggable MongoDB / SQLite storage with automatic fallback.",
+        "Built a portfolio-website generator that renders a resume into five hand-built, self-contained designs.",
+        "Covered the backend with a 62-test pytest suite running in CI."
+      ],
+      "stack": [
+        "Python",
+        "FastAPI",
+        "React",
+        "Vite",
+        "MongoDB",
+        "SQLite",
+        "OpenAI",
+        "Embeddings",
+        "TF-IDF",
+        "Tesseract OCR",
+        "SMTP",
+        "Docker",
+        "pytest",
+        "GitHub Actions"
+      ],
+      "decisions": [
+        {
+          "title": "Every AI feature has a no-key fallback",
+          "why": "Embeddings fall back to TF-IDF, fit analysis and emails to deterministic heuristics and templates, edits to rule-based logic. The app stays usable without paid keys."
+        },
+        {
+          "title": "Provider-agnostic LLM layer",
+          "why": "LLM_PROVIDER=auto uses whichever of OpenAI, Anthropic, or Gemini is configured, so no feature is locked to one vendor."
+        },
+        {
+          "title": "Aggregators instead of automated logins",
+          "why": "Automated LinkedIn or Naukri logins violate those sites' terms; aggregator APIs index the same postings legitimately."
+        },
+        {
+          "title": "Budget-capped external APIs",
+          "why": "A persistent cache plus a monthly hard stop keeps scheduled alerts from exhausting a free tier."
+        },
+        {
+          "title": "Pluggable storage with fallback",
+          "why": "MongoDB when configured, zero-config SQLite otherwise, and automatic fallback if MongoDB is unreachable at startup."
+        }
+      ],
+      "failures": [
+        "edit-data-loss",
+        "api-quota"
+      ],
+      "result": "Open-source app with a documented REST API, 62 backend tests in CI, and RAG matching that costs about $0.00007 per run with embeddings.",
+      "links": {
+        "github": "https://github.com/JayDhangar/resumate-ai-and-jobhunt-ai"
+      },
+      "architecture": "resumate"
+    },
+    {
+      "id": "recruitment",
+      "name": "Multi-Agent AI Recruitment Assistant",
+      "status": "project",
+      "period": "Nov 2025 - Dec 2025",
+      "role": "Personal project",
+      "summary": "A multi-agent system that ingests resumes straight from Gmail, scores candidates against job requirements, and triggers recruitment emails automatically.",
+      "problem": "Screening resumes that arrive by email is manual: reading each one, comparing it to the role, shortlisting, and following up.",
+      "highlights": [
+        "Built a multi-agent system that auto-ingests resumes from Gmail and converts them to structured data.",
+        "Matched candidate skills against job requirements using LLM-based scoring and analysis.",
+        "Split the workflow across collaborating agents for resume screening, candidate shortlisting, and interview scheduling.",
+        "Triggered automated recruitment emails via LangGraph orchestration pipelines."
+      ],
+      "stack": [
+        "Python",
+        "LangGraph",
+        "Gmail API",
+        "OAuth2",
+        "LLM scoring"
+      ],
+      "decisions": [
+        {
+          "title": "One agent per responsibility",
+          "why": "Screening, shortlisting, and scheduling take different inputs and produce different outputs; separate agents keep each prompt narrow."
+        },
+        {
+          "title": "Structure before scoring",
+          "why": "Resumes are converted to structured fields first, so matching compares like with like."
+        },
+        {
+          "title": "Explicit orchestration with LangGraph",
+          "why": "Handoffs between agents are defined as a graph, which makes the sequence inspectable."
+        }
+      ],
+      "failures": [],
+      "result": "Automates the path from a resume in the inbox to a recruitment email.",
+      "links": {
+        "github": "https://github.com/JayDhangar/Agentic-AI-and-Automation/tree/main/8_Task4"
+      },
+      "architecture": "recruitment"
+    },
+    {
+      "id": "media",
+      "name": "AI Media & Content Generation Suite",
+      "status": "project",
+      "period": "Oct 2025 - Nov 2025",
+      "role": "Personal project",
+      "summary": "An automation suite that turns images and text into extracted data, generated visuals, and ready-to-post social content.",
+      "problem": "Turning raw images and text into usable content (extracted text, generated visuals, channel-specific posts) normally takes several manual tools.",
+      "highlights": [
+        "Designed OCR-based automation pipelines to extract and process text from images using LLMs.",
+        "Built text-to-image generation workflows using Stable Diffusion.",
+        "Automated multi-platform social media content generation from image and text inputs.",
+        "Extended the suite with AI marketing-video generation and blog-to-speech TTS."
+      ],
+      "stack": [
+        "Python",
+        "OCR",
+        "Stable Diffusion",
+        "LLMs",
+        "TTS",
+        "Lumen5"
+      ],
+      "decisions": [
+        {
+          "title": "OCR first, LLM second",
+          "why": "OCR extracts the raw text; the LLM then structures and rewrites it, so each tool does the part it is good at."
+        },
+        {
+          "title": "Per-channel output",
+          "why": "One input produces posts tailored to each social channel instead of one generic caption."
+        }
+      ],
+      "failures": [],
+      "result": "One workflow from an image or prompt to extracted text, generated images, and channel-ready posts.",
+      "links": {
+        "github": "https://github.com/JayDhangar/Image-Generation-and-Media"
+      },
+      "architecture": "media"
+    },
+    {
+      "id": "jayos",
+      "name": "Jay.OS",
+      "status": "live",
+      "role": "This portfolio",
+      "summary": "This site: a static portfolio whose content lives in one JSON file, plus a RAG assistant that answers questions about it with citations.",
+      "problem": "A portfolio that describes AI engineering is weaker evidence than one that runs it. Visitors should be able to question the work directly and get grounded, cited answers.",
+      "highlights": [
+        "Single source of truth: every section and the assistant's knowledge base are generated from one portfolio.json.",
+        "BM25 retrieval with weighted query expansion, shared by the browser and the serverless function.",
+        "A serverless /api/ask endpoint grounds a Groq LLM in the retrieved passages with a cite-your-sources prompt.",
+        "Degrades gracefully: without an API key or network, the browser answers extractively from the same passages.",
+        "Every answer shows its retrieval trace and the systems it drew from."
+      ],
+      "stack": [
+        "JavaScript",
+        "BM25",
+        "Groq",
+        "Vercel Functions",
+        "HTML",
+        "CSS"
+      ],
+      "decisions": [
+        {
+          "title": "Lexical retrieval instead of embeddings",
+          "why": "The corpus is small, curated, and keyword-dense. BM25 runs in the browser with no model or vector store, and its rankings are easy to inspect and debug."
+        },
+        {
+          "title": "One retrieval implementation for client and server",
+          "why": "The local fallback and the LLM path retrieve identical context, so their answers can't silently diverge."
+        },
+        {
+          "title": "Fallback as a first-class mode",
+          "why": "The assistant still answers when the LLM is unavailable, and says which mode it's in."
+        }
+      ],
+      "failures": [
+        "retrieval-ranking"
+      ],
+      "result": "Live on Vercel. Every answer is traceable to the passages it used.",
+      "links": {
+        "github": "https://github.com/JayDhangar/portfolio",
+        "demo": "https://portfolio-jay-128b.vercel.app"
+      },
+      "architecture": "jayos"
+    }
+  ],
+  "lab": [
+    {
+      "id": "retrieval-ranking",
+      "system": "Jay.OS",
+      "systemId": "jayos",
+      "type": "RAG",
+      "kind": "incident",
+      "title": "Synonyms outranked the entity",
+      "problem": "Ask Jay.OS ranks portfolio passages with BM25 before answering.",
+      "failure": "“Explain the architecture of ChristianAI” ranked the Media Suite and Mendle diagrams above ChristianAI's. “Does he know Kubernetes” matched an unrelated passage.",
+      "rootCause": "Query expansion added synonyms at full weight, so generic terms outscored the one entity the visitor named. “know” wasn't a stop word.",
+      "fix": "Weighted expansions at 0.45 of the visitor's own terms, strengthened title matches, trimmed the architecture aliases, and added conversational filler to the stop list.",
+      "lesson": "Retrieval fails silently. Test with real questions and check what ranks first.",
+      "link": "https://github.com/JayDhangar/portfolio/blob/main/assets/rag.js"
+    },
+    {
+      "id": "tiktok-oauth",
+      "system": "TikTok Ads Agent",
+      "systemId": null,
+      "type": "Agents",
+      "kind": "incident",
+      "title": "The API the agent needed wasn't reachable",
+      "problem": "Build an AI agent that creates TikTok ads through the TikTok Ads API.",
+      "failure": "Live Ads API access was unavailable: the OAuth authorization could not complete.",
+      "rootCause": "TikTok Ads uses OAuth with PKCE requirements and regional restrictions that blocked authorization for this app.",
+      "fix": "A mocked OAuth access token simulates authenticated requests to exercise error handling and retry decisions; conversation and ad configuration persist in state.json for deterministic, resumable runs.",
+      "lesson": "When an external API is out of reach, build against a faithful stand-in and make the agent's state resumable.",
+      "link": "https://github.com/JayDhangar/TikTok-Ads-Creation-via-AI-Agent"
+    },
+    {
+      "id": "intent-routing",
+      "system": "ChristianAI",
+      "systemId": "christianai",
+      "type": "Routing",
+      "kind": "incident",
+      "title": "Typos broke intent detection",
+      "problem": "One assistant serves two intents, Christian-specific and general, and has to route each message to the right path.",
+      "failure": "Misspelled and ambiguous queries weren't detected reliably, so they could land on the wrong assistant path.",
+      "rootCause": "The primary classifier depends on recognizable phrasing; typos and vague wording fall outside it.",
+      "fix": "An LLM-based classification fallback takes over for queries the primary classifier can't resolve.",
+      "lesson": "Keep the predictable path for clear input and escalate to a model only for the hard cases."
+    },
+    {
+      "id": "narration-latency",
+      "system": "ChristianAI",
+      "systemId": "christianai",
+      "type": "Voice",
+      "kind": "incident",
+      "title": "First play waited on TTS",
+      "problem": "Scripture narration is generated with TTS so users can listen to any chapter.",
+      "failure": "First plays were slow: the user waited while narration was produced.",
+      "rootCause": "Audio generation sat on the user's critical path at first request.",
+      "fix": "Automated narration caching jobs pre-generate audio, so first play is served from cache.",
+      "lesson": "If output is predictable, generate it before anyone asks for it."
+    },
+    {
+      "id": "billing-alignment",
+      "system": "ChristianAI",
+      "systemId": "christianai",
+      "type": "Infra",
+      "kind": "incident",
+      "title": "Billing didn't match consumption",
+      "problem": "Credits pay for narrated listening, and credit prices have to cover model costs.",
+      "failure": "Chapter-based charging didn't reflect how much users actually listened, and credit pricing didn't track real OpenAI usage costs.",
+      "rootCause": "The billing unit (a chapter) and the pricing assumptions weren't tied to real consumption or real spend.",
+      "fix": "Re-engineered billing to meter real listening time and recalibrated credit pricing against actual OpenAI usage costs.",
+      "lesson": "Bill in the unit users consume, and price from measured cost, not estimates."
+    },
+    {
+      "id": "rate-limits",
+      "system": "Mendle",
+      "systemId": "mendle",
+      "type": "Reliability",
+      "kind": "risk",
+      "title": "Two rate limits, one error",
+      "problem": "Every Mendle response depends on a Groq call, and the provider enforces both per-minute and daily token limits.",
+      "failure": "Handled as one generic error, a rate limit either breaks the conversation or triggers retries that can never succeed.",
+      "rootCause": "Per-minute and daily limits look alike but recover on completely different timescales.",
+      "fix": "Retry with backoff for per-minute limits; daily-limit errors are distinguished and handled without pointless retries.",
+      "lesson": "A retry policy is only as good as its error taxonomy. Classify failures before reacting to them."
+    },
+    {
+      "id": "response-quality",
+      "system": "Mendle",
+      "systemId": "mendle",
+      "type": "Evals",
+      "kind": "risk",
+      "title": "Fluent isn't relevant",
+      "problem": "In wellness conversations, an off-topic or repetitive reply is a real failure, not a cosmetic one.",
+      "failure": "Generated responses can drift off-topic, repeat earlier replies, or come out the wrong length while still sounding fluent.",
+      "rootCause": "The generator doesn't check its own output against the conversation.",
+      "fix": "An embedding-based quality gate on every response: cosine-similarity relevance scoring, repetition checks, and length validation.",
+      "lesson": "Anything you can score, score before it reaches the user."
+    },
+    {
+      "id": "search-injection",
+      "system": "Mendle",
+      "systemId": "mendle",
+      "type": "Security",
+      "kind": "risk",
+      "title": "Retrieved text can give orders",
+      "problem": "Grounding responses in live web search keeps answers current.",
+      "failure": "Search results are third-party text; instructions embedded in them could be followed by the model.",
+      "rootCause": "Retrieved content enters the same context window as trusted instructions.",
+      "fix": "Prompt-injection defenses on the Serper / Google Search grounding path.",
+      "lesson": "Retrieval widens the attack surface. Treat retrieved text as data, never as instructions."
+    },
+    {
+      "id": "edit-data-loss",
+      "system": "ResuMate AI",
+      "systemId": "resumate",
+      "type": "Agents",
+      "kind": "risk",
+      "title": "An edit that deletes too much",
+      "problem": "Users edit resumes in plain language: “Replace C++ with Rust”, “Remove internship”.",
+      "failure": "An LLM rewriting a structured resume can silently drop or change content the user never asked to touch.",
+      "rootCause": "A generative edit rewrites the document, not just the requested part.",
+      "fix": "An anti-data-loss guard around LLM edits, plus a rule-based fallback when no model is configured.",
+      "lesson": "When an LLM edits user data, verify what changed, not just that it responded.",
+      "link": "https://github.com/JayDhangar/resumate-ai-and-jobhunt-ai"
+    },
+    {
+      "id": "api-quota",
+      "system": "JobHunt AI",
+      "systemId": "resumate",
+      "type": "Infra",
+      "kind": "risk",
+      "title": "Scheduled searches vs. a free tier",
+      "problem": "Job alerts run on a schedule against a job-search API with a limited free tier.",
+      "failure": "Repeated and scheduled searches can exhaust the monthly quota, after which the source stops returning results.",
+      "rootCause": "Every identical search is a new billable call, and nothing caps total monthly usage.",
+      "fix": "A ~20h persistent cache shared by identical searches, alerts capped at once per day, and a monthly budget (default 180 calls) that hard-stops before the free tier runs out.",
+      "lesson": "External quotas are a design constraint. Build the budget into the system.",
+      "link": "https://github.com/JayDhangar/resumate-ai-and-jobhunt-ai"
+    }
+  ],
+  "architectures": [
+    {
+      "id": "christianai",
+      "name": "ChristianAI assistant pipeline",
+      "caption": "Queries are classified (with an LLM fallback for messy input), routed to the right assistant, grounded with live web search, and returned with citations.",
+      "stages": [
+        {
+          "label": "Input",
+          "nodes": [
+            {
+              "label": "User message",
+              "what": "A chat message from the app: a faith question or an everyday request.",
+              "why": "One entry point for both assistant modes.",
+              "in": "User text and conversation",
+              "out": "Raw query for classification",
+              "fails": [
+                "Misspellings and vague phrasing make intent unclear"
+              ]
+            }
+          ]
+        },
+        {
+          "label": "Understand",
+          "nodes": [
+            {
+              "label": "Intent classifier",
+              "what": "Decides whether a message needs the Christian-specific or the general assistant.",
+              "why": "The two paths need different prompts, sources, and guardrails.",
+              "in": "User query",
+              "out": "Intent label",
+              "fails": [
+                "Misroutes typos and ambiguous queries, which the LLM fallback catches"
+              ],
+              "xp": [
+                "intent-routing"
+              ]
+            },
+            {
+              "label": "LLM fallback classifier",
+              "what": "An LLM classification step for queries the primary classifier can't resolve.",
+              "why": "Improves intent detection for misspellings and ambiguous queries.",
+              "in": "Unresolved query",
+              "out": "Intent label",
+              "fails": [
+                "Adds latency and cost whenever it's triggered",
+                "Genuinely ambiguous input can still be misread"
+              ],
+              "xp": [
+                "intent-routing"
+              ]
+            },
+            {
+              "label": "Safety guardrails",
+              "what": "Constrains what each assistant path is allowed to answer.",
+              "why": "A faith-focused product needs predictable, safe behavior in both modes.",
+              "in": "Classified query",
+              "out": "Allowed request or refusal",
+              "fails": [
+                "Over-blocking legitimate questions",
+                "New phrasing slipping past rules"
+              ]
+            }
+          ]
+        },
+        {
+          "label": "Route",
+          "nodes": [
+            {
+              "label": "Christian-specific path",
+              "what": "Handles faith questions with Christian-specific behavior and framing.",
+              "why": "Domain answers need domain context.",
+              "in": "Faith-intent query",
+              "out": "Prompt and context for generation",
+              "fails": [
+                "Tone or instructions leaking between paths"
+              ]
+            },
+            {
+              "label": "General assistant path",
+              "what": "ChatGPT-style help for everyday requests.",
+              "why": "Users get one app for both kinds of question.",
+              "in": "General-intent query",
+              "out": "Prompt and context for generation",
+              "fails": [
+                "Faith questions misrouted here lose their domain framing"
+              ]
+            }
+          ]
+        },
+        {
+          "label": "Generate",
+          "nodes": [
+            {
+              "label": "OpenAI Responses API",
+              "what": "Generates the answer and can call tools such as web search.",
+              "why": "Generation and tool use through one API.",
+              "in": "Prompt and context",
+              "out": "Draft answer",
+              "fails": [
+                "Provider latency and timeouts",
+                "Cost grows with context size"
+              ]
+            },
+            {
+              "label": "Live web search",
+              "what": "Fetches current information and sources for the answer.",
+              "why": "Answers about recent events need current data, with citations users can check.",
+              "in": "Search query from the model",
+              "out": "Results and citations",
+              "fails": [
+                "Stale or low-quality results",
+                "Untrusted text entering the prompt"
+              ]
+            },
+            {
+              "label": "GPT-4o vision / images",
+              "what": "Poster generation, person placement, and face compositing of user photos.",
+              "why": "Lets users create shareable scripture posters with their own photos.",
+              "in": "Prompt and user photo",
+              "out": "Composited poster",
+              "fails": [
+                "Generative models can distort faces",
+                "Scripture text inconsistent across languages, handled by a translation quality system"
+              ]
+            }
+          ]
+        },
+        {
+          "label": "Deliver",
+          "nodes": [
+            {
+              "label": "Answer + citations",
+              "what": "The final response with its sources.",
+              "why": "Users can verify web-grounded claims.",
+              "in": "Draft answer and sources",
+              "out": "Rendered reply",
+              "fails": [
+                "A citation that doesn't support the claim it's attached to"
+              ]
+            },
+            {
+              "label": "Semantic title",
+              "what": "An AI-generated conversation title based on meaning.",
+              "why": "Makes chat history navigable.",
+              "in": "Conversation",
+              "out": "Title",
+              "fails": [
+                "Generic titles that don't distinguish conversations"
+              ]
+            },
+            {
+              "label": "Usage-metered credits",
+              "what": "Charges credits on real usage, such as narration listening time.",
+              "why": "Credits track what users consume and what models actually cost.",
+              "in": "Usage events",
+              "out": "Credit balance",
+              "fails": [
+                "Pricing drifting away from real model cost"
+              ],
+              "xp": [
+                "billing-alignment"
+              ]
+            }
+          ]
+        }
+      ],
+      "tab": "ChristianAI"
+    },
+    {
+      "id": "mendle",
+      "name": "Mendle orchestration layer",
+      "caption": "Context is assembled with recency awareness, grounded with search behind injection defenses, generated through a fault-tolerant Groq layer, and validated before delivery.",
+      "stages": [
+        {
+          "label": "Input",
+          "nodes": [
+            {
+              "label": "Conversation turn",
+              "what": "A message in a one-to-one or multi-party session.",
+              "why": "Every response starts from the latest turn.",
+              "in": "User message",
+              "out": "Turn for context assembly",
+              "fails": [
+                "Sensitive content that needs careful handling end to end"
+              ]
+            }
+          ]
+        },
+        {
+          "label": "Context",
+          "nodes": [
+            {
+              "label": "Recency-aware context",
+              "what": "Assembles conversation history weighted toward recent turns.",
+              "why": "Improves coherence and relevance in long conversations.",
+              "in": "Conversation history",
+              "out": "Context for generation",
+              "fails": [
+                "Dropping an older detail that still matters",
+                "History outgrowing the token budget"
+              ]
+            },
+            {
+              "label": "Emotional Memory Objects",
+              "what": "Generates structured insights from conversations.",
+              "why": "Gives the system insight it can use to support the user.",
+              "in": "Conversation",
+              "out": "Memory objects",
+              "fails": [
+                "Recording a wrong or over-generalized insight"
+              ]
+            },
+            {
+              "label": "Anonymity controls",
+              "what": "The multi-party mediation engine decides what participants can learn about each other.",
+              "why": "Privacy is enforced by the system, not left to the model.",
+              "in": "Participants and messages",
+              "out": "Mediated context",
+              "fails": [
+                "Identity leaking through generated text"
+              ]
+            }
+          ]
+        },
+        {
+          "label": "Ground",
+          "nodes": [
+            {
+              "label": "Serper / Google Search",
+              "what": "Real-time web search for grounding.",
+              "why": "Keeps responses current.",
+              "in": "Search query",
+              "out": "Search results",
+              "fails": [
+                "Irrelevant results",
+                "Added latency"
+              ],
+              "xp": [
+                "search-injection"
+              ]
+            },
+            {
+              "label": "Prompt-injection defenses",
+              "what": "Treats retrieved web content as untrusted data.",
+              "why": "Search results can contain instructions aimed at the model.",
+              "in": "Raw search results",
+              "out": "Grounding context",
+              "fails": [
+                "New injection patterns that bypass defenses"
+              ],
+              "xp": [
+                "search-injection"
+              ]
+            }
+          ]
+        },
+        {
+          "label": "Orchestrate",
+          "nodes": [
+            {
+              "label": "Groq + LangChain",
+              "what": "The core LLM orchestration layer.",
+              "why": "Fast inference with a composable pipeline.",
+              "in": "Context and grounding",
+              "out": "Candidate response",
+              "fails": [
+                "Rate limits",
+                "Provider errors"
+              ]
+            },
+            {
+              "label": "Retry / backoff",
+              "what": "Retries transient failures with increasing delays.",
+              "why": "Transient per-minute limits clear quickly.",
+              "in": "Failed call",
+              "out": "Retried call or error",
+              "fails": [
+                "Retry storms without a bound on attempts"
+              ],
+              "xp": [
+                "rate-limits"
+              ]
+            },
+            {
+              "label": "Token-limit handling",
+              "what": "Distinguishes per-minute from daily token-limit errors.",
+              "why": "They recover on different timescales, so they need different responses.",
+              "in": "Rate-limit error",
+              "out": "Retry or controlled failure",
+              "fails": [
+                "A misclassified limit causes useless retries or an early give-up"
+              ],
+              "xp": [
+                "rate-limits"
+              ]
+            }
+          ]
+        },
+        {
+          "label": "Validate",
+          "nodes": [
+            {
+              "label": "Embedding relevance",
+              "what": "Scores response relevance with cosine similarity against the conversation.",
+              "why": "Catches off-topic replies before users see them.",
+              "in": "Candidate response and context",
+              "out": "Relevance score",
+              "fails": [
+                "Thresholds too strict reject good answers; too loose let drift through"
+              ],
+              "xp": [
+                "response-quality"
+              ]
+            },
+            {
+              "label": "Repetition + length checks",
+              "what": "Rejects responses that repeat earlier replies or fall outside length bounds.",
+              "why": "Repetition and rambling are measurable defects.",
+              "in": "Candidate response",
+              "out": "Pass or reject",
+              "fails": [
+                "Legitimate restatement flagged as repetition"
+              ],
+              "xp": [
+                "response-quality"
+              ]
+            }
+          ]
+        },
+        {
+          "label": "Observe",
+          "nodes": [
+            {
+              "label": "Latency metrics",
+              "what": "Tracks model latency.",
+              "why": "Surfaces slowdowns and regressions.",
+              "in": "Call timings",
+              "out": "Latency data",
+              "fails": [
+                "Averages hiding tail latency"
+              ]
+            },
+            {
+              "label": "Interaction metrics",
+              "what": "Tracks how users interact with responses.",
+              "why": "Grounds improvements in real usage.",
+              "in": "Interaction events",
+              "out": "Usage data",
+              "fails": [
+                "Metrics that don't reflect real user outcomes"
+              ]
+            }
+          ]
+        }
+      ],
+      "tab": "Mendle"
+    },
+    {
+      "id": "resumate",
+      "name": "ResuMate + JobHunt agent system",
+      "caption": "Specialized agents behind a coordinator, a provider-agnostic LLM layer with offline fallbacks, and ranked, scored outputs.",
+      "stages": [
+        {
+          "label": "Input",
+          "nodes": [
+            {
+              "label": "Resume upload",
+              "what": "PDF, DOCX, PNG, or JPG resume, or a blank start.",
+              "why": "Meets users with whatever resume they already have.",
+              "in": "File",
+              "out": "Document for parsing",
+              "fails": [
+                "Scanned or image resumes need OCR"
+              ]
+            },
+            {
+              "label": "Job search query",
+              "what": "Role, location, and remote filter.",
+              "why": "Drives the job fan-out.",
+              "in": "Search form",
+              "out": "Query for job boards",
+              "fails": [
+                "Broad queries returning noisy matches"
+              ]
+            }
+          ]
+        },
+        {
+          "label": "Agents",
+          "nodes": [
+            {
+              "label": "Resume Reader + OCR",
+              "what": "Parses uploads (Tesseract OCR for images and scanned PDFs) into structured JSON.",
+              "why": "Every later step works on structured fields, not raw text.",
+              "in": "Resume file",
+              "out": "Structured resume JSON",
+              "fails": [
+                "OCR errors on low-quality scans"
+              ]
+            },
+            {
+              "label": "Resume Editor",
+              "what": "Applies natural-language edits like “Replace C++ with Rust”.",
+              "why": "Editing by instruction instead of forms.",
+              "in": "Resume and instruction",
+              "out": "Edited resume",
+              "fails": [
+                "An LLM edit dropping unrelated content, prevented by the anti-data-loss guard"
+              ],
+              "xp": [
+                "edit-data-loss"
+              ]
+            },
+            {
+              "label": "Job Search",
+              "what": "Fans out across enabled job boards in parallel.",
+              "why": "No single board has every posting.",
+              "in": "Search query",
+              "out": "Deduped, ranked postings",
+              "fails": [
+                "Duplicate postings across boards",
+                "Substring matches on the wrong skill"
+              ],
+              "xp": [
+                "api-quota"
+              ]
+            }
+          ]
+        },
+        {
+          "label": "Coordinate",
+          "nodes": [
+            {
+              "label": "Coordinator",
+              "what": "Orchestrates the resume agents and owns version history, prompt history, and persistence.",
+              "why": "One place owns state, so agents stay stateless.",
+              "in": "Agent requests",
+              "out": "Persisted versions",
+              "fails": [
+                "Contradictory instructions, resolved last-wins"
+              ]
+            },
+            {
+              "label": "LLM provider layer",
+              "what": "Uses whichever of OpenAI, Anthropic, or Gemini is configured, or none.",
+              "why": "No feature is locked to one vendor, and every feature has an offline fallback.",
+              "in": "Prompt",
+              "out": "Completion or fallback result",
+              "fails": [
+                "Missing keys, handled by deterministic fallbacks"
+              ]
+            }
+          ]
+        },
+        {
+          "label": "Rank & score",
+          "nodes": [
+            {
+              "label": "RAG job matching",
+              "what": "Embeds the resume and postings (text-embedding-3-small) and re-ranks by cosine similarity blended with skill overlap.",
+              "why": "Ranks jobs by fit to this resume, not just by keyword.",
+              "in": "Resume and postings",
+              "out": "Match % and matched skills",
+              "fails": [
+                "No embedding key, handled by a TF-IDF fallback"
+              ]
+            },
+            {
+              "label": "Genuineness score",
+              "what": "Scores each posting 0-100 with visible reasons: apply domain, HTTPS, scam wording, salary plausibility, age.",
+              "why": "Job boards contain scams; users see why a posting is flagged.",
+              "in": "Posting",
+              "out": "Score and verdict",
+              "fails": [
+                "A new scam pattern scoring as trusted"
+              ]
+            }
+          ]
+        },
+        {
+          "label": "Output",
+          "nodes": [
+            {
+              "label": "Export (6 formats)",
+              "what": "PDF, DOCX, HTML, PNG, Markdown, and JSON, offline in pure Python.",
+              "why": "Users leave with the format each application asks for.",
+              "in": "Rendered resume",
+              "out": "Files",
+              "fails": [
+                "Layout differences between formats"
+              ]
+            },
+            {
+              "label": "Fit & apply email",
+              "what": "Per-job fit score, skill gaps, and an AI-drafted application email built only from the resume and the job.",
+              "why": "Turns a match into an application.",
+              "in": "Resume and posting",
+              "out": "Fit report and draft email",
+              "fails": [
+                "Drafts claiming skills the resume doesn't have"
+              ]
+            }
+          ]
+        }
+      ],
+      "tab": "ResuMate + JobHunt"
+    },
+    {
+      "id": "recruitment",
+      "name": "Recruitment Assistant agent graph",
+      "caption": "A LangGraph pipeline where agents hand off from intake to parsing to evaluation to outreach.",
+      "stages": [
+        {
+          "label": "Ingest",
+          "nodes": [
+            {
+              "label": "Gmail API (OAuth2)",
+              "what": "Pulls incoming resumes from a Gmail inbox.",
+              "why": "Resumes arrive by email; intake starts where they land.",
+              "in": "Inbox",
+              "out": "Resume attachments",
+              "fails": [
+                "Expired OAuth tokens",
+                "Non-resume attachments"
+              ]
+            }
+          ]
+        },
+        {
+          "label": "Parse",
+          "nodes": [
+            {
+              "label": "Resume → structured data",
+              "what": "Converts each resume into structured fields.",
+              "why": "Scoring compares like with like.",
+              "in": "Resume file",
+              "out": "Candidate record",
+              "fails": [
+                "Unusual layouts parsed incorrectly"
+              ]
+            }
+          ]
+        },
+        {
+          "label": "Evaluate",
+          "nodes": [
+            {
+              "label": "LLM skill matching",
+              "what": "Scores candidate skills against the job requirements.",
+              "why": "Consistent first-pass screening.",
+              "in": "Candidate record and job requirements",
+              "out": "Fit score and analysis",
+              "fails": [
+                "Scores sensitive to how requirements are phrased"
+              ]
+            },
+            {
+              "label": "Shortlisting agent",
+              "what": "Selects candidates to move forward.",
+              "why": "Separates judgment from action.",
+              "in": "Scored candidates",
+              "out": "Shortlist",
+              "fails": [
+                "A threshold that's too tight or too loose"
+              ]
+            }
+          ]
+        },
+        {
+          "label": "Act",
+          "nodes": [
+            {
+              "label": "Scheduling + emails",
+              "what": "Interview scheduling and automated recruitment emails, orchestrated by LangGraph.",
+              "why": "Closes the loop without manual follow-up.",
+              "in": "Shortlist",
+              "out": "Emails and scheduled interviews",
+              "fails": [
+                "Emails sent on a wrong score"
+              ]
+            }
+          ]
+        }
+      ],
+      "tab": "Recruitment Assistant"
+    },
+    {
+      "id": "media",
+      "name": "Media Suite generation flow",
+      "caption": "Images and text go in; extracted data, generated visuals, and channel-ready posts come out.",
+      "stages": [
+        {
+          "label": "Input",
+          "nodes": [
+            {
+              "label": "Image",
+              "what": "A source image containing text or subject matter.",
+              "why": "Many content workflows start from an image.",
+              "in": "Image file",
+              "out": "Image for OCR",
+              "fails": [
+                "Low-resolution or skewed images"
+              ]
+            },
+            {
+              "label": "Text prompt",
+              "what": "A description of the content to create.",
+              "why": "Drives image generation and copy.",
+              "in": "User text",
+              "out": "Prompt",
+              "fails": [
+                "Vague prompts producing generic output"
+              ]
+            }
+          ]
+        },
+        {
+          "label": "Extract",
+          "nodes": [
+            {
+              "label": "OCR",
+              "what": "Extracts raw text from images.",
+              "why": "Gets text out reliably before any interpretation.",
+              "in": "Image",
+              "out": "Raw text",
+              "fails": [
+                "Recognition errors on noisy images"
+              ]
+            },
+            {
+              "label": "LLM processing",
+              "what": "Structures, cleans, and rewrites extracted text.",
+              "why": "Turns raw OCR output into usable content.",
+              "in": "Raw text",
+              "out": "Structured text",
+              "fails": [
+                "The model “correcting” text it should have preserved"
+              ]
+            }
+          ]
+        },
+        {
+          "label": "Generate",
+          "nodes": [
+            {
+              "label": "Stable Diffusion",
+              "what": "Text-to-image generation.",
+              "why": "Custom visuals without stock imagery.",
+              "in": "Prompt",
+              "out": "Image",
+              "fails": [
+                "Off-prompt or artifacted images"
+              ]
+            },
+            {
+              "label": "Channel-specific posts",
+              "what": "Writes posts tailored to different social channels.",
+              "why": "Each platform needs different copy.",
+              "in": "Image and text",
+              "out": "Posts per channel",
+              "fails": [
+                "Tone mismatched to the platform"
+              ]
+            }
+          ]
+        },
+        {
+          "label": "Output",
+          "nodes": [
+            {
+              "label": "Multi-platform content",
+              "what": "Ready-to-post content per platform.",
+              "why": "One input, many channels.",
+              "in": "Generated assets",
+              "out": "Content set",
+              "fails": [
+                "Needs review before publishing"
+              ]
+            }
+          ]
+        }
+      ],
+      "tab": "Media Suite"
+    },
+    {
+      "id": "jayos",
+      "name": "Jay.OS this portfolio",
+      "caption": "The Ask Jay.OS assistant is a small RAG system over this site's own content file.",
+      "stages": [
+        {
+          "label": "Input",
+          "nodes": [
+            {
+              "label": "Visitor question",
+              "what": "A question typed into Ask Jay.OS, plus the previous turn for follow-ups.",
+              "why": "Visitors question the work directly.",
+              "in": "Text (max 300 chars)",
+              "out": "Query",
+              "fails": [
+                "Off-topic or adversarial questions"
+              ]
+            }
+          ]
+        },
+        {
+          "label": "Retrieve",
+          "nodes": [
+            {
+              "label": "Chunk portfolio.json",
+              "what": "Splits the content file into small passages: highlights, decisions, experiments, components.",
+              "why": "Small passages make retrieval precise and citations specific.",
+              "in": "portfolio.json",
+              "out": "Passages",
+              "fails": [
+                "A fact split across two passages"
+              ]
+            },
+            {
+              "label": "BM25 + weighted expansion",
+              "what": "Ranks passages by term relevance, with synonyms weighted below the visitor's own words.",
+              "why": "Transparent, dependency-free retrieval that runs in the browser and the server.",
+              "in": "Query and passages",
+              "out": "Top passages with scores",
+              "fails": [
+                "Vocabulary mismatch between the question and the content"
+              ],
+              "xp": [
+                "retrieval-ranking"
+              ]
+            }
+          ]
+        },
+        {
+          "label": "Generate",
+          "nodes": [
+            {
+              "label": "Groq LLM",
+              "what": "Generates the answer from the retrieved passages.",
+              "why": "Natural answers instead of raw excerpts.",
+              "in": "Grounded prompt",
+              "out": "Answer with [n] citations",
+              "fails": [
+                "Timeouts and rate limits, which trigger the local fallback"
+              ]
+            },
+            {
+              "label": "Grounded prompt",
+              "what": "Instructs the model to answer only from numbered passages, cite them, and refuse to invent.",
+              "why": "Keeps answers factual and checkable.",
+              "in": "Passages and question",
+              "out": "Messages for the model",
+              "fails": [
+                "Injection attempts in the question, which the prompt instructs the model to ignore"
+              ]
+            }
+          ]
+        },
+        {
+          "label": "Deliver",
+          "nodes": [
+            {
+              "label": "Cited answer",
+              "what": "The answer, its retrieval trace, and the systems it drew from.",
+              "why": "Every claim can be traced to a passage.",
+              "in": "Answer and sources",
+              "out": "Rendered response",
+              "fails": [
+                "A citation pointing at the wrong passage"
+              ]
+            },
+            {
+              "label": "Local fallback",
+              "what": "Extractive answer built in the browser from the same passages.",
+              "why": "The assistant keeps working without the LLM.",
+              "in": "Top passages",
+              "out": "Structured excerpt answer",
+              "fails": [
+                "Less fluent than generated answers"
+              ]
+            }
+          ]
+        }
+      ],
+      "tab": "Jay.OS"
+    }
+  ],
+  "experience": [
+    {
+      "role": "AI Trainee",
+      "company": "SoluLab",
+      "location": "",
+      "period": "Feb 2026 - Present",
+      "current": true,
+      "bullets": [
+        "Developing AI-powered features and end-to-end automation solutions for client projects.",
+        "Designing and implementing agentic workflows using LangChain, LangGraph, and CrewAI.",
+        "Building multi-agent AI systems with RAG pipelines, LangGraph, CrewAI, and Agno for intelligent model orchestration.",
+        "Integrating LLM APIs, REST services, and third-party tools into scalable AI pipelines."
+      ]
+    },
+    {
+      "role": "IT Intern",
+      "company": "SFR Medical",
+      "location": "London, UK",
+      "period": "Aug 2023 - Sep 2023",
+      "current": false,
+      "bullets": [
+        "Worked for a MedTech firm providing medical evidence support to UK police forces.",
+        "Developed and maintained website features including cookie consent management.",
+        "Built and deployed a customer-facing chatbot for internal and external queries.",
+        "Created an automated salary slip generation workflow to streamline HR operations.",
+        "Organized and managed internal documentation and reporting systems."
+      ]
+    }
+  ],
+  "education": [
+    {
+      "degree": "B.Tech, Computer Science",
+      "school": "LNCTS, Bhopal",
+      "period": "2020 - 2024",
+      "score": "8.12 CGPA"
+    },
+    {
+      "degree": "Senior Secondary (PCM)",
+      "school": "Priyadarshni HSS",
+      "period": "2019 - 2020",
+      "score": "60%"
+    }
+  ],
+  "skills": [
+    {
+      "group": "Languages",
+      "items": [
+        "Python",
+        "SQL",
+        "JavaScript"
+      ]
+    },
+    {
+      "group": "AI / Agents",
+      "items": [
+        "LangChain",
+        "LangGraph",
+        "CrewAI",
+        "Agno",
+        "RAG",
+        "FAISS",
+        "Embeddings",
+        "Hugging Face",
+        "Groq",
+        "OpenAI",
+        "Prompt Engineering"
+      ]
+    },
+    {
+      "group": "Backend",
+      "items": [
+        "FastAPI",
+        "REST APIs",
+        "Webhooks",
+        "Gmail API",
+        "OAuth2",
+        "Workflow Automation"
+      ]
+    },
+    {
+      "group": "Multimodal AI",
+      "items": [
+        "OCR",
+        "Stable Diffusion",
+        "Whisper",
+        "TTS",
+        "ElevenLabs",
+        "Lumen5"
+      ]
+    },
+    {
+      "group": "Data",
+      "items": [
+        "PostgreSQL",
+        "MongoDB",
+        "MySQL",
+        "SQLite"
+      ]
+    },
+    {
+      "group": "Infra & Tools",
+      "items": [
+        "Docker",
+        "AWS",
+        "GCP",
+        "GitHub Actions",
+        "pytest",
+        "Git",
+        "Postman"
+      ]
+    }
+  ],
+  "thinking": [
+    {
+      "title": "Guardrails are part of the product",
+      "body": "Safety isn't a layer bolted on at the end. Intent classification, safety guardrails, and prompt-injection defenses shape what a system is allowed to do from the first request.",
+      "evidence": [
+        "Intent guardrails in ChristianAI",
+        "injection defenses and anonymity controls in Mendle"
+      ],
+      "reasoning": [
+        "A guardrail added after launch is a patch on behavior users have already seen. Deciding what a system may do, which intents it serves and which content it trusts, belongs in the architecture.",
+        "In practice that means classifying before generating (ChristianAI's intent routing), treating retrieved text as data (Mendle's injection defenses), and enforcing privacy in the system rather than in a prompt (Mendle's anonymity controls)."
+      ],
+      "related": [
+        "intent-routing",
+        "search-injection"
+      ]
+    },
+    {
+      "title": "Assume the model will fail",
+      "body": "Rate limits, timeouts, and ambiguous input are normal operating conditions. Systems should retry, back off, and fall back instead of breaking.",
+      "evidence": [
+        "Retry/backoff with per-minute vs. daily limit handling",
+        "LLM classifier fallback",
+        "no-key fallbacks in ResuMate"
+      ],
+      "reasoning": [
+        "LLM providers rate-limit, time out, and return unexpected output as a matter of course. The question isn't whether a call fails, but whether the product degrades gracefully when it does.",
+        "The useful move is classifying failures: a per-minute limit deserves a retry, a daily limit doesn't. The same idea runs through ResuMate, where every AI feature has a deterministic fallback, and this site, which answers locally when the LLM is unavailable."
+      ],
+      "related": [
+        "rate-limits",
+        "tiktok-oauth"
+      ]
+    },
+    {
+      "title": "Measure quality, don't eyeball it",
+      "body": "If a response can be scored, score it. Relevance, repetition, and latency are numbers you can track and improve.",
+      "evidence": [
+        "Embedding relevance scoring",
+        "LLM-as-a-judge",
+        "latency oversight in Mendle",
+        "retrieval tests for Jay.OS"
+      ],
+      "reasoning": [
+        "Looking good in a demo doesn't survive real conversations. Relevance, repetition, and length can be computed on every response, so they should be.",
+        "Measurement applies to retrieval too: this site's assistant ranked the wrong architecture first until it was tested with real questions and the top result was checked."
+      ],
+      "related": [
+        "response-quality",
+        "retrieval-ranking"
+      ]
+    },
+    {
+      "title": "Ground every answer",
+      "body": "Models are most useful when they're connected to current, verifiable sources, and honest about what they don't know.",
+      "evidence": [
+        "Web search with citations",
+        "RAG job matching",
+        "this portfolio's own RAG assistant"
+      ],
+      "reasoning": [
+        "A model's knowledge is frozen and unattributed. Grounding, whether web search or retrieval over known data, makes answers current and checkable, and citations let the user do the checking.",
+        "Grounding has costs: retrieved text is untrusted, and bad retrieval produces confident wrong answers. So grounding ships with injection defenses and retrieval tests."
+      ],
+      "related": [
+        "search-injection",
+        "retrieval-ranking"
+      ]
+    },
+    {
+      "title": "Cost is an engineering constraint",
+      "body": "Token spend, caching, and billing models are design decisions. Pricing should follow real usage, not guesses.",
+      "evidence": [
+        "Listening-time metering",
+        "pricing recalibrated to OpenAI costs",
+        "narration caching",
+        "API budgets in JobHunt"
+      ],
+      "reasoning": [
+        "Model calls, TTS generation, and third-party APIs cost money per use, so the billing unit, the cache, and the quota are part of the design, not an afterthought.",
+        "ChristianAI moved to listening-time metering and recalibrated pricing on measured OpenAI cost; JobHunt caps its job API with a persistent cache and a monthly budget; narration is pre-generated so cost and latency aren't paid on the user's first play."
+      ],
+      "related": [
+        "billing-alignment",
+        "api-quota",
+        "narration-latency"
+      ]
+    }
+  ],
+  "contact": {
+    "email": "dhangarjay447@gmail.com",
+    "phone": "+91 8319260168",
+    "github": "https://github.com/JayDhangar",
+    "location": "Bhopal, India",
+    "languages": [
+      "English (full professional)",
+      "Hindi (native)"
+    ],
+    "interests": [
+      "AI",
+      "Programming",
+      "Volleyball",
+      "E-Sports"
+    ]
+  },
+  "suggestions": [
+    "What AI systems has Jay built?",
+    "Tell me about ChristianAI.",
+    "What RAG systems has Jay worked on?",
+    "What failures has Jay encountered in production?",
+    "How does Jay handle LLM failures?"
+  ],
+  "site": {
+    "title": "Jay Dhangar | AI Engineer",
+    "description": "AI engineer building production LLM systems: orchestration, RAG, guardrails, and evaluation. Ask Jay.OS, a RAG assistant over this portfolio.",
+    "url": "",
+    "image": "assets/og.png",
+    "imageAlt": "JAY.OS portfolio of Jay Dhangar, AI Engineer"
+  },
+  "sections": {
+    "systems": {
+      "title": "Systems",
+      "intro": "Two production platforms and four projects. Open a console for the problem, architecture, decisions, failures, and result."
+    },
+    "lab": {
+      "title": "AI Lab",
+      "intro": "Engineering experiments told as problem, failure, root cause, fix, and lesson. Observed failures are marked apart from failure modes a system was designed against."
+    },
+    "engineering": {
+      "title": "Engineering",
+      "intro": "How the systems are wired. Pick a system, then a component, to see what it does, why it exists, and how it fails."
+    },
+    "experience": {
+      "title": "Experience",
+      "intro": "Where I've worked, what I did there, and the stack I work in."
+    },
+    "thinking": {
+      "title": "Thinking",
+      "intro": "The principles I bring to AI engineering. Open one for the reasoning and the experiments behind it."
+    },
+    "contact": {
+      "title": "Contact",
+      "heading": "Open to AI engineering roles.",
+      "body": "Email is the fastest way to reach me. Code and projects are on GitHub."
+    },
+    "askIntro": "Answers are retrieved from this portfolio's own content, then generated with citations.",
+    "footer": "Static site generated from one JSON file, with a serverless RAG assistant."
+  }
+}

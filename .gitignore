@@ -1,3 +1,33 @@
-.vercel
+# Secrets
+.env
+.env.*
+
+# AI agent / assistant tooling (not part of the site)
+.claude/
+.agents/
+skills-lock.json
+CLAUDE.md
+AGENTS.md
+
+# Dependencies (the site has no runtime dependencies; these only appear if you install
+# Playwright to regenerate og.png)
+node_modules/
+package-lock.json
+
+# Deployment / tooling state
+.vercel/
+
+# Editors and OS
+.vscode/
+.idea/
+*.swp
 .DS_Store
 Thumbs.db
+desktop.ini
+
+# Logs, test output, scratch files
+*.log
+test-results/
+playwright-report/
+screenshots/
+*.tmp
