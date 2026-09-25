@@ -21,8 +21,13 @@ const ctx = {
   passages: RAG.buildChunks(data).length,
 };
 
+// Brand mark: inlined in the sidebar from the same file the PNG icons and og.png are rendered from.
+const mark = fs.readFileSync(path.join(ROOT, 'assets/mark.svg'), 'utf8').trim()
+  .replace('<svg ', '<svg class="brand-mark" width="32" height="32" aria-hidden="true" focusable="false" ');
+
 const slots = {
   head: () => R.head(data, ctx),
+  mark: () => mark,
   passages: () => String(ctx.passages),
   hero: () => R.hero(data, ctx),
   systems: () => R.systems(data, ctx),

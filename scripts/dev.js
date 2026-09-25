@@ -29,7 +29,7 @@ function build() {
 build();
 let pending = null;
 ['data', 'src'].forEach((dir) => fs.watch(path.join(ROOT, dir), () => { clearTimeout(pending); pending = setTimeout(build, 150); }));
-fs.watch(path.join(ROOT, 'assets', 'render.js'), () => { clearTimeout(pending); pending = setTimeout(build, 150); });
+['render.js', 'mark.svg'].forEach((f) => fs.watch(path.join(ROOT, 'assets', f), () => { clearTimeout(pending); pending = setTimeout(build, 150); }));
 
 const ask = require('../api/ask.js');
 

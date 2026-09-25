@@ -22,22 +22,18 @@
   },
   "stats": [
     {
-      "value": "100K+",
-      "label": "users on a Bible Player backend I designed",
-      "system": "christianai"
-    },
-    {
       "value": "2",
-      "label": "production AI platforms engineered"
+      "label": "Production AI platforms"
     },
     {
       "value": "3",
-      "label": "AI modalities in production: text, vision, voice"
+      "label": "AI modalities",
+      "detail": "Text · Vision · Voice"
     },
     {
       "value": "62",
-      "label": "backend tests in CI on ResuMate AI",
-      "system": "resumate"
+      "label": "Backend tests in CI",
+      "detail": "ResuMate AI"
     }
   ],
   "systems": [

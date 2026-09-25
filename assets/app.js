@@ -89,8 +89,12 @@
       if (ok) shown++;
     });
     $$('[data-filter-kind]').forEach(function (b) { b.setAttribute('aria-pressed', String(b.getAttribute('data-filter-kind') === labFilter.kind)); });
-    var sel = $('[data-filter-sys]');
-    if (sel) sel.value = labFilter.sys;
+    var btn = $('#sys-filter-btn');
+    if (btn) {
+      btn.setAttribute('data-filter-sys', labFilter.sys);
+      $$('.sys-value > span', btn).forEach(function (s) { s.classList.toggle('on', s.getAttribute('data-value') === labFilter.sys); });
+      $$('#sys-filter-list [role="option"]').forEach(function (o) { o.setAttribute('aria-selected', String(o.getAttribute('data-value') === labFilter.sys)); });
+    }
     $('[data-lab-count]').textContent = (shown === items.length ? shown : shown + ' of ' + items.length) + ' experiments';
   }
   function initLab() {
@@ -101,11 +105,93 @@
       var b = e.target.closest('[data-filter-kind]');
       if (b) { labFilter.kind = b.getAttribute('data-filter-kind'); applyLabFilter(); }
     });
-    $('[data-filter-sys]').addEventListener('change', function (e) { labFilter.sys = e.target.value; applyLabFilter(); });
+    initSysFilter();
+  }
+
+  // System filter: a listbox button. Focus moves into the list while it is open and returns to the trigger.
+  var closeSysFilter = function () {};
+  function initSysFilter() {
+    var root = $('[data-sys-filter]');
+    if (!root) return;
+    var btn = $('#sys-filter-btn', root), list = $('#sys-filter-list', root);
+    var options = $$('[role="option"]', list);
+    var typed = '', typedAt = 0;
+    var FOCUSABLE = 'a[href], button, input, select, textarea, summary, label, [tabindex]:not([tabindex="-1"])';
+
+    function isOpen() { return !list.hidden; }
+    function place() {
+      list.classList.remove('up', 'end');
+      var r = list.getBoundingClientRect(), b = btn.getBoundingClientRect();
+      if (r.right > window.innerWidth - 8) list.classList.add('end');
+      if (r.bottom > window.innerHeight - 8 && b.top - r.height - 6 >= 8) list.classList.add('up');
+    }
+    function open(viaPointer) {
+      if (isOpen()) return;
+      typed = '';
+      list.hidden = false;
+      btn.setAttribute('aria-expanded', 'true');
+      place();
+      (options.filter(function (o) { return o.getAttribute('aria-selected') === 'true'; })[0] || options[0]).focus();
+      if (viaPointer) fadeIn(list, 120);
+    }
+    function close(restoreFocus) {
+      if (!isOpen()) return;
+      list.hidden = true;
+      btn.setAttribute('aria-expanded', 'false');
+      if (restoreFocus) btn.focus({ preventScroll: true });
+    }
+    function choose(o) {
+      labFilter.sys = o.getAttribute('data-value');
+      applyLabFilter();
+      close(true);
+    }
+    closeSysFilter = close;
+
+    btn.addEventListener('click', function (e) { if (isOpen()) close(true); else open(e.detail !== 0); });
+    btn.addEventListener('keydown', function (e) {
+      if (e.key === 'ArrowDown' || e.key === 'ArrowUp') { e.preventDefault(); open(false); }
+    });
+    list.addEventListener('click', function (e) { var o = e.target.closest('[role="option"]'); if (o) choose(o); });
+    list.addEventListener('keydown', function (e) {
+      var i = options.indexOf(document.activeElement), last = options.length - 1;
+      if (e.key === 'ArrowDown') { e.preventDefault(); options[Math.min(i + 1, last)].focus(); }
+      else if (e.key === 'ArrowUp') { e.preventDefault(); options[Math.max(i - 1, 0)].focus(); }
+      else if (e.key === 'Home' || e.key === 'PageUp') { e.preventDefault(); options[0].focus(); }
+      else if (e.key === 'End' || e.key === 'PageDown') { e.preventDefault(); options[last].focus(); }
+      else if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); if (i > -1) choose(options[i]); }
+      else if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); close(true); }
+      else if (e.key === 'Tab') close(true); // default Tab then moves on from the trigger, like a native select
+      else if (e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey) {
+        var now = Date.now();
+        typed = (now - typedAt > 600 ? '' : typed) + e.key.toLowerCase();
+        typedAt = now;
+        var start = typed.length === 1 ? i + 1 : Math.max(i, 0);
+        var hit = options.slice(start).concat(options.slice(0, start)).filter(function (o) {
+          return $('.sys-opt-label', o).textContent.toLowerCase().indexOf(typed) === 0;
+        })[0];
+        if (hit) hit.focus();
+      }
+    });
+    // Focus left for something outside (e.g. Ctrl K): close without pulling focus back.
+    root.addEventListener('focusout', function (e) {
+      if (e.relatedTarget && !root.contains(e.relatedTarget)) close(false);
+    });
+    document.addEventListener('pointerdown', function (e) {
+      if (!isOpen() || root.contains(e.target)) return;
+      var toFocusable = e.target.closest && e.target.closest(FOCUSABLE);
+      close(false);
+      // A click on plain page content would leave focus on <body> or <main>; return it to the trigger instead.
+      if (!toFocusable) setTimeout(function () {
+        var a = document.activeElement;
+        if (!a || a === document.body || a.getAttribute('tabindex') === '-1') btn.focus({ preventScroll: true });
+      }, 0);
+    });
+    window.addEventListener('resize', function () { if (isOpen()) place(); });
   }
   function focusExperiment(id) {
     var card = document.getElementById('xp-' + id);
     if (!card) return;
+    closeSysFilter(false);
     if (card.hidden) { labFilter = { kind: 'all', sys: 'all' }; applyLabFilter(); }
     card.open = true;
     scrollToEl(card);

@@ -105,7 +105,8 @@
       + '</div>'
       + '</div>'
       + '<div class="stats">' + d.stats.map(function (s) {
-        return '<div class="stat"><b>' + esc(s.value) + '</b><span>' + esc(s.label) + '</span></div>';
+        return '<div class="stat"><b>' + esc(s.value) + '</b><span>' + esc(s.label) + '</span>'
+          + (s.detail ? '<small class="mono">' + esc(s.detail) + '</small>' : '') + '</div>';
       }).join('') + '</div>'
       + '</section>';
   }
@@ -216,10 +217,24 @@
       return '<button type="button" class="seg-btn" data-filter-kind="' + f[0] + '" aria-pressed="' + (i ? 'false' : 'true') + '">'
         + f[1] + ' <span class="seg-n mono">' + count(f[0]) + '</span></button>';
     }).join('');
-    var select = '<label class="sys-filter"><span class="sr-only">Filter by system</span><select data-filter-sys>'
-      + '<option value="all">All systems</option>'
-      + systemsSeen.map(function (k) { return '<option value="' + esc(k) + '">' + esc(sysLabel[k]) + '</option>'; }).join('')
-      + '</select></label>';
+    var opts = [['all', 'All systems', d.lab.length]].concat(systemsSeen.map(function (k) {
+      return [k, sysLabel[k], d.lab.filter(function (l) { return sysKey(l) === k; }).length];
+    }));
+    // Listbox button: the trigger stacks every label in one grid cell so its width never changes with the selection.
+    var select = '<div class="sys-filter" data-sys-filter>'
+      + '<span class="sr-only" id="sys-filter-label">Filter by system</span>'
+      + '<button type="button" class="sys-trigger" id="sys-filter-btn" data-filter-sys="all" aria-haspopup="listbox" aria-expanded="false"'
+      + ' aria-controls="sys-filter-list" aria-labelledby="sys-filter-label sys-filter-btn">'
+      + '<span class="sys-dot" aria-hidden="true"></span><span class="sys-value">'
+      + opts.map(function (o, i) { return '<span data-value="' + esc(o[0]) + '"' + (i ? '' : ' class="on"') + '>' + esc(o[1]) + '</span>'; }).join('')
+      + '</span><span class="sys-chev" aria-hidden="true"></span></button>'
+      + '<ul class="sys-list" id="sys-filter-list" role="listbox" aria-labelledby="sys-filter-label" hidden>'
+      + opts.map(function (o, i) {
+        return '<li role="option" id="sys-opt-' + esc(o[0]) + '" data-value="' + esc(o[0]) + '" aria-selected="' + (i ? 'false' : 'true') + '" tabindex="-1">'
+          + '<span class="sys-dot" aria-hidden="true"></span><span class="sys-opt-label">' + esc(o[1]) + '</span>'
+          + '<span class="seg-n mono" aria-hidden="true">' + o[2] + '</span></li>';
+      }).join('')
+      + '</ul></div>';
     return '<section id="lab" class="sec">' + secHead('02', d.sections.lab)
       + '<div class="lab-tools" data-lab-tools hidden>'
       + '<div class="seg" role="group" aria-label="Filter by outcome">' + seg + '</div>' + select
